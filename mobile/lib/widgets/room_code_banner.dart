@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../config/theme.dart';
+
 class RoomCodeBanner extends StatelessWidget {
   final String code;
   final String? roomName;
@@ -12,7 +14,7 @@ class RoomCodeBanner extends StatelessWidget {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Room code copied to clipboard'),
+        content: Text('Room code copied'),
         duration: Duration(seconds: 2),
       ),
     );
@@ -22,21 +24,10 @@ class RoomCodeBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 20, 12, 20),
+      padding: const EdgeInsets.fromLTRB(20, 18, 12, 18),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF7C5CFC), Color(0xFF5B8DEF)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x337C5CFC),
-            blurRadius: 16,
-            offset: Offset(0, 6),
-          ),
-        ],
+        color: AppTheme.ink,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       ),
       child: Row(
         children: [
@@ -48,31 +39,32 @@ class RoomCodeBanner extends StatelessWidget {
                   Text(
                     roomName!,
                     style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.background,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                 ] else
-                  const SizedBox(height: 4),
-                Text(
+                  const SizedBox(height: 2),
+                const Text(
                   'ROOM CODE',
                   style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.2,
-                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.4,
+                    color: AppTheme.inkMuted,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
                   code,
                   style: const TextStyle(
-                    fontSize: 36,
+                    fontSize: 32,
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 4,
-                    color: Colors.white,
+                    letterSpacing: 3,
+                    color: AppTheme.background,
+                    height: 1.1,
                   ),
                 ),
               ],
@@ -80,12 +72,12 @@ class RoomCodeBanner extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(14),
+              color: Colors.white.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             ),
             child: IconButton(
               onPressed: () => _copy(context),
-              icon: const Icon(Icons.copy_rounded, color: Colors.white),
+              icon: const Icon(Icons.copy_rounded, color: AppTheme.background),
               tooltip: 'Copy code',
             ),
           ),

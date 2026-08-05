@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../config/theme.dart';
 import '../models/member.dart';
 import '../providers/expense_provider.dart';
-
-/// Design tokens (kept local so widgets render correctly regardless of theme).
-class _T {
-  static const surface = Color(0xFF1A1D24);
-  static const surfaceElevated = Color(0xFF22262E);
-  static const primary = Color(0xFF7C5CFC);
-  static const negative = Color(0xFFFF6B6B);
-  static const textPrimary = Color(0xFFF5F7FA);
-  static const textSecondary = Color(0xFF8B92A5);
-  static const textMuted = Color(0xFF5C6378);
-}
 
 class MemberList extends StatelessWidget {
   const MemberList({super.key});
@@ -29,17 +19,15 @@ class MemberList extends StatelessWidget {
           return const _EmptyMembers();
         }
         return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
           itemCount: provider.members.length,
           itemBuilder: (context, index) {
             final member = provider.members[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _MemberTile(
-                key: ValueKey(member.id),
-                member: member,
-                index: index,
-              ),
+            return _MemberTile(
+              key: ValueKey(member.id),
+              member: member,
             );
           },
         );
@@ -48,81 +36,76 @@ class MemberList extends StatelessWidget {
   }
 }
 
+/// ── Empty state ───────────────────────────────────────────────
 class _EmptyMembers extends StatelessWidget {
   const _EmptyMembers();
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: constraints.maxHeight),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 88,
-                  height: 88,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _T.primary.withValues(alpha: 0.12),
-                    border: Border.all(
-                      color: _T.primary.withValues(alpha: 0.25),
-                      width: 1,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.group_rounded,
-                    size: 40,
-                    color: _T.primary,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'No members yet',
-                  style: TextStyle(
-                    color: _T.textPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Add people to start splitting\nexpenses together',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: _T.textSecondary,
-                    fontSize: 14,
-                    height: 1.4,
-                  ),
-                ),
-              ],
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppTheme.surfaceDim,
+              ),
+              child: const Icon(
+                Icons.person_add_outlined,
+                size: 30,
+                color: AppTheme.inkSecondary,
+              ),
             ),
-          ),
+            const SizedBox(height: 20),
+            const Text(
+              'No members yet',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
+                color: AppTheme.ink,
+              ),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Add people to start\nsplitting together',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppTheme.inkSecondary,
+                fontSize: 14,
+                height: 1.5,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
+/// ── Loading state ─────────────────────────────────────────────
 class _MemberLoading extends StatelessWidget {
   const _MemberLoading();
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
       itemCount: 4,
       itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.only(bottom: 8),
         child: Container(
-          height: 64,
+          height: 60,
           decoration: BoxDecoration(
-            color: _T.surface,
-            borderRadius: BorderRadius.circular(20),
+            color: AppTheme.surfaceDim,
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           ),
         ),
       ),
@@ -130,27 +113,11 @@ class _MemberLoading extends StatelessWidget {
   }
 }
 
+/// ── Member tile ───────────────────────────────────────────────
 class _MemberTile extends StatelessWidget {
   final Member member;
-  final int index;
 
-  const _MemberTile({
-    super.key,
-    required this.member,
-    required this.index,
-  });
-
-  Color _avatarColor() {
-    const colors = [
-      Color(0xFF7C5CFC),
-      Color(0xFFFF6B6B),
-      Color(0xFF2DD4A7),
-      Color(0xFF5B8DEF),
-      Color(0xFFF59E0B),
-      Color(0xFFEC4899),
-    ];
-    return colors[member.id.abs() % colors.length];
-  }
+  const _MemberTile({super.key, required this.member});
 
   String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+'));
@@ -163,32 +130,16 @@ class _MemberTile extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: _T.surfaceElevated,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: const Text(
-          'Remove member?',
-          style: TextStyle(
-            color: _T.textPrimary,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        content: Text(
-          'Remove ${member.name} from this room? This cannot be undone.',
-          style: const TextStyle(color: _T.textSecondary),
-        ),
+        title: const Text('Remove member?'),
+        content: Text('Remove ${member.name} from this room? This cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: _T.textMuted),
-            ),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: TextButton.styleFrom(foregroundColor: _T.negative),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.negative),
             child: const Text('Remove'),
           ),
         ],
@@ -201,8 +152,7 @@ class _MemberTile extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              context.read<ExpenseProvider>().errorMessage ??
-                  'Failed to remove',
+              context.read<ExpenseProvider>().errorMessage ?? 'Failed to remove',
             ),
           ),
         );
@@ -212,99 +162,65 @@ class _MemberTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 320),
-      curve: Curves.easeOutCubic,
-      builder: (context, value, child) {
-        return Opacity(
-          opacity: value.clamp(0, 1),
-          child: Transform.translate(
-            offset: Offset(0, 12 * (1 - value)),
-            child: child,
-          ),
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
       child: Container(
         decoration: BoxDecoration(
-          color: _T.surface,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x40000000),
-              blurRadius: 12,
-              offset: Offset(0, 4),
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          border: Border.all(color: AppTheme.border, width: 1),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            // ── Avatar ──
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppTheme.avatarColor(member.id),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+              ),
+              child: Center(
+                child: Text(
+                  _initials(member.name),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            // ── Name ──
+            Expanded(
+              child: Text(
+                member.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: AppTheme.ink,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.2,
+                ),
+              ),
+            ),
+            // ── Remove ──
+            GestureDetector(
+              onTap: () => _confirmDelete(context),
+              behavior: HitTestBehavior.opaque,
+              child: const Padding(
+                padding: EdgeInsets.all(4),
+                child: Icon(
+                  Icons.close_rounded,
+                  size: 16,
+                  color: AppTheme.inkMuted,
+                ),
+              ),
             ),
           ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Row(
-            children: [
-              // Colored avatar with initials
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: _avatarColor(),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Center(
-                  child: Text(
-                    _initials(member.name),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 14),
-              // Name + role label
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      member.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: _T.textPrimary,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    const Text(
-                      'MEMBER',
-                      style: TextStyle(
-                        color: _T.textMuted,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Subtle delete
-              GestureDetector(
-                onTap: () => _confirmDelete(context),
-                behavior: HitTestBehavior.opaque,
-                child: const Padding(
-                  padding: EdgeInsets.all(4),
-                  child: Icon(
-                    Icons.close_rounded,
-                    size: 18,
-                    color: _T.textMuted,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

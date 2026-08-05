@@ -1,126 +1,146 @@
 import 'package:flutter/material.dart';
 
+/// ─────────────────────────────────────────────────────────────
+///  Tabbr — "Paper & Ink" design system
+///
+///  A warm, light, editorial aesthetic. Think of a well-designed
+///  receipt or a ledger: cream paper, ink-black text, a single
+///  bold coral accent for money, forest green for settled states.
+///  No gradients. No glassmorphism. No dark mode. Just clear,
+///  confident, typographic hierarchy with architectural radii.
+/// ─────────────────────────────────────────────────────────────
 class AppTheme {
   // ── Core palette ──────────────────────────────────────────────
-  static const Color background = Color(0xFF0F1115);
-  static const Color surface = Color(0xFF1A1D24);
-  static const Color surfaceElevated = Color(0xFF22262E);
-  static const Color primaryAccent = Color(0xFF7C5CFC);
-  static const Color primaryBlue = Color(0xFF5B8DEF);
-  static const Color positive = Color(0xFF2DD4A7);
-  static const Color negative = Color(0xFFFF6B6B);
-  static const Color textPrimary = Color(0xFFF5F7FA);
-  static const Color textSecondary = Color(0xFF8B92A5);
-  static const Color textMuted = Color(0xFF5C6378);
-  static const Color border = Color(0xFF2A2E38);
+  static const Color background = Color(0xFFF6F3EE);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceDim = Color(0xFFF0EDE6);
+  static const Color accent = Color(0xFFE8553D);
+  static const Color accentSoft = Color(0xFFFDE8E2);
+  static const Color positive = Color(0xFF2D7D5E);
+  static const Color positiveSoft = Color(0xFFDDF0E6);
+  static const Color ink = Color(0xFF1A1A1A);
+  static const Color inkSecondary = Color(0xFF6B6B6B);
+  static const Color inkMuted = Color(0xFFA0A0A0);
+  static const Color border = Color(0xFFE5E0D8);
+  static const Color borderStrong = Color(0xFFD0C9BD);
+  static const Color negative = Color(0xFFC93838);
 
-  // ── Gradients ────────────────────────────────────────────────
-  static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF7C5CFC), Color(0xFF5B8DEF)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
+  // ── Avatar palette (warm, muted, curated) ────────────────────
+  static const List<Color> avatarColors = [
+    Color(0xFFE8553D), // coral
+    Color(0xFF2D7D5E), // forest
+    Color(0xFF4A6FA5), // steel blue
+    Color(0xFFD49A3F), // amber
+    Color(0xFF7B5EA7), // muted purple
+    Color(0xFFC2606B), // dusty rose
+    Color(0xFF3D8B8B), // teal
+    Color(0xFF8B6F47), // warm brown
+  ];
 
-  static const LinearGradient cardAccentGradient = LinearGradient(
-    colors: [Color(0x227C5CFC), Color(0x225B8DEF)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
+  static Color avatarColor(int id) =>
+      avatarColors[id.abs() % avatarColors.length];
 
-  // ── Box shadows ──────────────────────────────────────────────
-  static List<BoxShadow> cardShadow() => const [
-        BoxShadow(
-          color: Color(0x40000000),
-          blurRadius: 12,
-          offset: Offset(0, 4),
-        ),
-      ];
-
-  static List<BoxShadow> fabShadow() => const [
-        BoxShadow(
-          color: Color(0x557C5CFC),
-          blurRadius: 16,
-          offset: Offset(0, 6),
-        ),
-      ];
+  // ── Shape ───────────────────────────────────────────────────
+  static const double radiusSm = 8;
+  static const double radiusMd = 12;
+  static const double radiusLg = 16;
 
   // ── Text styles ──────────────────────────────────────────────
-  static const TextStyle headline = TextStyle(
+  static const TextStyle display = TextStyle(
     fontWeight: FontWeight.w800,
-    letterSpacing: -0.5,
-    color: textPrimary,
+    letterSpacing: -1.2,
+    color: ink,
   );
 
-  static const TextStyle cardTitle = TextStyle(
+  static const TextStyle headline = TextStyle(
     fontWeight: FontWeight.w700,
-    color: textPrimary,
+    letterSpacing: -0.5,
+    color: ink,
   );
 
-  static const TextStyle label = TextStyle(
-    fontWeight: FontWeight.w500,
-    letterSpacing: 0.5,
-    color: textSecondary,
+  static const TextStyle title = TextStyle(
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.2,
+    color: ink,
   );
 
-  static TextStyle labelUpper({Color color = textSecondary}) => TextStyle(
-        fontWeight: FontWeight.w600,
-        letterSpacing: 1.0,
-        fontSize: 11,
-        color: color,
-      );
+  static const TextStyle body = TextStyle(
+    fontWeight: FontWeight.w400,
+    color: ink,
+  );
+
+  static const TextStyle secondary = TextStyle(
+    fontWeight: FontWeight.w400,
+    color: inkSecondary,
+  );
+
+  static const TextStyle caption = TextStyle(
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.8,
+    fontSize: 11,
+    color: inkMuted,
+  );
 
   static const TextStyle amount = TextStyle(
     fontWeight: FontWeight.w700,
     letterSpacing: -0.3,
-    color: textPrimary,
+    color: accent,
+  );
+
+  static const TextStyle amountPositive = TextStyle(
+    fontWeight: FontWeight.w700,
+    letterSpacing: -0.3,
+    color: positive,
   );
 
   // ── Theme ─────────────────────────────────────────────────────
-  static ThemeData darkTheme() {
+  static ThemeData lightTheme() {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: primaryAccent,
-      brightness: Brightness.dark,
+      seedColor: accent,
+      brightness: Brightness.light,
     ).copyWith(
-      primary: primaryAccent,
-      secondary: primaryBlue,
+      primary: accent,
+      secondary: positive,
       surface: surface,
-      surfaceContainerHighest: surfaceElevated,
       error: negative,
+      onSurface: ink,
     );
 
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
+      brightness: Brightness.light,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: background,
       canvasColor: surface,
+      dividerColor: border,
       cardTheme: CardThemeData(
         color: surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(radiusMd),
+          side: const BorderSide(color: border, width: 1),
         ),
         margin: EdgeInsets.zero,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+        backgroundColor: background,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
         titleTextStyle: TextStyle(
-          fontSize: 28,
+          fontSize: 22,
           fontWeight: FontWeight.w800,
           letterSpacing: -0.5,
-          color: textPrimary,
+          color: ink,
         ),
-        iconTheme: IconThemeData(color: textSecondary),
+        iconTheme: IconThemeData(color: ink),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: primaryAccent,
-          foregroundColor: Colors.white,
+          backgroundColor: ink,
+          foregroundColor: background,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(radiusMd),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           textStyle: const TextStyle(
@@ -131,10 +151,10 @@ class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: textPrimary,
-          side: const BorderSide(color: border),
+          foregroundColor: ink,
+          side: const BorderSide(color: borderStrong, width: 1.2),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(radiusMd),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           textStyle: const TextStyle(
@@ -145,64 +165,64 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: primaryAccent,
-          textStyle: const TextStyle(fontWeight: FontWeight.w600),
+          foregroundColor: accent,
+          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surface,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: border),
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: border, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: border),
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: border, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: primaryAccent, width: 1.5),
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: ink, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: negative),
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: negative, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(radiusMd),
           borderSide: const BorderSide(color: negative, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        labelStyle: const TextStyle(color: textSecondary),
-        hintStyle: const TextStyle(color: textMuted),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        labelStyle: const TextStyle(color: inkSecondary, fontSize: 14),
+        hintStyle: const TextStyle(color: inkMuted, fontSize: 14),
+        floatingLabelStyle: const TextStyle(
+          color: ink,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       tabBarTheme: TabBarThemeData(
-        labelColor: Colors.white,
-        unselectedLabelColor: textSecondary,
-        indicatorColor: primaryAccent,
-        labelStyle: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-        ),
-        unselectedLabelStyle: TextStyle(
-          fontWeight: FontWeight.w500,
-          fontSize: 14,
-          color: textSecondary,
-        ),
+        labelColor: accent,
+        unselectedLabelColor: inkSecondary,
+        indicatorColor: accent,
+        labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+        unselectedLabelStyle:
+            const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: primaryAccent,
-        foregroundColor: Colors.white,
+        backgroundColor: ink,
+        foregroundColor: background,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(radiusMd),
         ),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: surfaceElevated,
-        contentTextStyle: const TextStyle(color: textPrimary),
+        backgroundColor: ink,
+        contentTextStyle: const TextStyle(color: background, fontSize: 14),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(radiusMd),
         ),
       ),
       dividerTheme: const DividerThemeData(
@@ -210,17 +230,34 @@ class AppTheme {
         thickness: 1,
         space: 1,
       ),
-      iconTheme: const IconThemeData(color: textSecondary),
+      iconTheme: const IconThemeData(color: ink),
       popupMenuTheme: PopupMenuThemeData(
-        color: surfaceElevated,
+        color: surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(radiusMd),
+          side: const BorderSide(color: border, width: 1),
         ),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: surfaceElevated,
+        backgroundColor: surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(radiusLg),
+        ),
+        titleTextStyle: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          color: ink,
+        ),
+        contentTextStyle: const TextStyle(
+          fontSize: 14,
+          color: inkSecondary,
+        ),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: surface,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
       ),
     );

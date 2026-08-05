@@ -16,9 +16,9 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.dark,
       systemNavigationBarColor: AppTheme.background,
-      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
   final config = await ApiConfig.load();
@@ -56,7 +56,7 @@ class TabbrApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Tabbr',
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme(),
+        theme: AppTheme.lightTheme(),
         home: const _Root(),
       ),
     );

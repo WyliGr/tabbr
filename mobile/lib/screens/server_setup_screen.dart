@@ -102,66 +102,58 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 28),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(),
-              // Gradient circle with cloud icon
+              // ── Icon ──
               Center(
                 child: Container(
-                  width: 88,
-                  height: 88,
+                  width: 72,
+                  height: 72,
                   decoration: BoxDecoration(
-                    gradient: AppTheme.primaryGradient,
-                    shape: BoxShape.circle,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x447C5CFC),
-                        blurRadius: 20,
-                        offset: Offset(0, 8),
-                      ),
-                    ],
+                    color: AppTheme.accentSoft,
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(
-                    Icons.cloud_rounded,
-                    size: 40,
-                    color: Colors.white,
+                    Icons.dns_rounded,
+                    size: 34,
+                    color: AppTheme.accent,
                   ),
                 ),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 24),
               const Text(
                 'Connect to server',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 26,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
-                  color: AppTheme.textPrimary,
+                  color: AppTheme.ink,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               const Text(
                 'Enter your Tabbr server URL',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
-                  color: AppTheme.textSecondary,
+                  color: AppTheme.inkSecondary,
                 ),
               ),
-              const SizedBox(height: 36),
+              const SizedBox(height: 32),
               TextField(
                 controller: _controller,
                 keyboardType: TextInputType.url,
                 autocorrect: false,
-                style: const TextStyle(color: AppTheme.textPrimary),
+                style: const TextStyle(color: AppTheme.ink, fontSize: 15),
                 decoration: const InputDecoration(
                   labelText: 'Server URL',
                   hintText: 'http://localhost:8000',
                 ),
               ),
-              // Status message
               AnimatedSize(
                 duration: const Duration(milliseconds: 200),
                 child: _status != null
@@ -197,38 +189,31 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                     : const SizedBox.shrink(),
               ),
               const SizedBox(height: 28),
-              // Save button (gradient)
-              GestureDetector(
-                onTap: _saving || _testing ? null : _save,
-                child: Opacity(
-                  opacity: _saving || _testing ? 0.5 : 1.0,
-                  child: Container(
-                    height: 56,
-                    decoration: BoxDecoration(
-                      gradient: AppTheme.primaryGradient,
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x447C5CFC),
-                          blurRadius: 12,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Center(
+              // ── Save button (ink filled) ──
+              Opacity(
+                opacity: _saving || _testing ? 0.6 : 1.0,
+                child: Material(
+                  color: AppTheme.ink,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                    onTap: _saving || _testing ? null : _save,
+                    child: Container(
+                      height: 52,
+                      alignment: Alignment.center,
                       child: _saving
                           ? const SizedBox(
-                              height: 22,
-                              width: 22,
+                              height: 20,
+                              width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.white,
+                                color: AppTheme.background,
                               ),
                             )
                           : const Text(
                               'Save and continue',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppTheme.background,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 15,
                               ),
@@ -238,15 +223,15 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              // Test button (outline)
+              // ── Test button (outlined) ──
               SizedBox(
-                height: 56,
+                height: 52,
                 child: OutlinedButton(
                   onPressed: _saving || _testing ? null : _test,
                   child: _testing
                       ? const SizedBox(
-                          height: 22,
-                          width: 22,
+                          height: 20,
+                          width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                           ),

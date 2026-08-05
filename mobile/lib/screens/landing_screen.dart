@@ -68,7 +68,7 @@ class _LandingScreenState extends State<LandingScreen>
             ),
           );
         },
-        transitionDuration: const Duration(milliseconds: 350),
+        transitionDuration: const Duration(milliseconds: 300),
       ),
     );
   }
@@ -139,19 +139,17 @@ class _LandingScreenState extends State<LandingScreen>
       body: SafeArea(
         child: Stack(
           children: [
-            // Settings icon top-right
             Positioned(
               top: 0,
               right: 0,
               child: IconButton(
-                icon: const Icon(Icons.settings_rounded),
+                icon: const Icon(Icons.tune_rounded),
                 tooltip: 'Server settings',
                 onPressed: _changeServer,
               ),
             ),
-            // Main content
             SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 28),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: MediaQuery.of(context).size.height -
@@ -161,219 +159,132 @@ class _LandingScreenState extends State<LandingScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 80),
-                    // Hero logo
-                    Center(
-                      child: Container(
-                        width: 96,
-                        height: 96,
-                        decoration: BoxDecoration(
-                          gradient: AppTheme.primaryGradient,
-                          shape: BoxShape.circle,
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color(0x557C5CFC),
-                              blurRadius: 24,
-                              offset: Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.account_balance_wallet_rounded,
-                          size: 44,
-                          color: Colors.white,
+                    const SizedBox(height: 72),
+                    // ── Wordmark ──
+                    const Center(
+                      child: Text(
+                        'tabbr',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 52,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -2.5,
+                          color: AppTheme.ink,
+                          height: 1,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 6),
                     const Text(
-                      'Tabbr',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 42,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -1.0,
-                        color: AppTheme.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Split expenses with your group',
+                      'split expenses,\nkeep it simple',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 15,
-                        color: AppTheme.textSecondary,
+                        height: 1.5,
+                        color: AppTheme.inkSecondary,
                       ),
                     ),
-                    const SizedBox(height: 56),
-                    // ── Create a room card ──
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: AppTheme.surface,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppTheme.border),
-                        boxShadow: AppTheme.cardShadow(),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  gradient: AppTheme.primaryGradient,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Icon(
-                                  Icons.add_rounded,
-                                  color: Colors.white,
-                                  size: 22,
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              const Text(
-                                'Create a room',
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppTheme.textPrimary,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          // Animated expansion for room name input
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                            alignment: Alignment.topCenter,
-                            child: _showCreateName
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      TextField(
-                                        controller: _createNameController,
-                                        textCapitalization:
-                                            TextCapitalization.words,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Room name (optional)',
-                                          hintText: 'Trip to Lisbon',
-                                        ),
-                                      ),
-                                      const SizedBox(height: 14),
-                                      _gradientButton(
-                                        label: 'Create room',
-                                        icon: Icons.arrow_forward_rounded,
-                                        loading: loading,
-                                        onPressed: _createRoom,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      TextButton(
-                                        onPressed: loading
-                                            ? null
-                                            : () => setState(() =>
-                                                _showCreateName = false),
-                                        child: const Text('Cancel'),
-                                      ),
-                                    ],
-                                  )
-                                : _gradientButton(
-                                    label: 'Start',
-                                    icon: Icons.add_circle_outline_rounded,
+                    const SizedBox(height: 64),
+                    // ── Create a room ──
+                    _ActionCard(
+                      label: 'Create a room',
+                      subtext: 'Start a new expense group',
+                      icon: Icons.add_rounded,
+                      accent: AppTheme.accent,
+                      accentBg: AppTheme.accentSoft,
+                      child: AnimatedSize(
+                        duration: const Duration(milliseconds: 280),
+                        curve: Curves.easeInOut,
+                        alignment: Alignment.topCenter,
+                        child: _showCreateName
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  TextField(
+                                    controller: _createNameController,
+                                    textCapitalization:
+                                        TextCapitalization.words,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Room name (optional)',
+                                      hintText: 'Trip to Lisbon',
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  _PrimaryButton(
+                                    label: 'Create room',
                                     loading: loading,
-                                    onPressed: () =>
-                                        setState(() => _showCreateName = true),
+                                    onPressed: _createRoom,
                                   ),
-                          ),
-                        ],
+                                  TextButton(
+                                    onPressed: loading
+                                        ? null
+                                        : () => setState(
+                                            () => _showCreateName = false),
+                                    child: const Text('Cancel'),
+                                  ),
+                                ],
+                              )
+                            : _PrimaryButton(
+                                label: 'Get started',
+                                icon: Icons.arrow_forward_rounded,
+                                loading: loading,
+                                onPressed: () =>
+                                    setState(() => _showCreateName = true),
+                              ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    // ── Join with code card ──
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: AppTheme.surface,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppTheme.border),
-                        boxShadow: AppTheme.cardShadow(),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                    const SizedBox(height: 16),
+                    // ── Join with code ──
+                    _ActionCard(
+                      label: 'Join with code',
+                      subtext: 'Enter a code shared with you',
+                      icon: Icons.group_add_rounded,
+                      accent: AppTheme.positive,
+                      accentBg: AppTheme.positiveSoft,
+                      child: Row(
                         children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: AppTheme.surfaceElevated,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Icon(
-                                  Icons.group_add_rounded,
-                                  color: AppTheme.textSecondary,
-                                  size: 22,
-                                ),
+                          Expanded(
+                            child: TextField(
+                              controller: _joinCodeController,
+                              textCapitalization:
+                                  TextCapitalization.characters,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[A-Za-z0-9]')),
+                                LengthLimitingTextInputFormatter(8),
+                              ],
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 1.5,
+                                color: AppTheme.ink,
                               ),
-                              const SizedBox(width: 14),
-                              const Text(
-                                'Join with code',
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppTheme.textPrimary,
-                                ),
+                              decoration: const InputDecoration(
+                                labelText: 'Room code',
+                                hintText: 'ABCD12',
+                                isDense: true,
                               ),
-                            ],
+                            ),
                           ),
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _joinCodeController,
-                                  textCapitalization:
-                                      TextCapitalization.characters,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp(r'[A-Za-z0-9]')),
-                                    LengthLimitingTextInputFormatter(8),
-                                  ],
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 2,
-                                    color: AppTheme.textPrimary,
-                                  ),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Room code',
-                                    hintText: 'ABCDE',
-                                  ),
-                                ),
+                          const SizedBox(width: 12),
+                          SizedBox(
+                            height: 52,
+                            child: OutlinedButton(
+                              onPressed: loading ? null : _joinRoom,
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 22),
+                                backgroundColor: AppTheme.ink,
+                                foregroundColor: AppTheme.background,
+                                side: BorderSide.none,
                               ),
-                              const SizedBox(width: 12),
-                              SizedBox(
-                                height: 56,
-                                child: OutlinedButton(
-                                  onPressed: loading ? null : _joinRoom,
-                                  style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                  ),
-                                  child: const Text('Join'),
-                                ),
-                              ),
-                            ],
+                              child: const Text('Join'),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 48),
                   ],
                 ),
               ),
@@ -383,49 +294,131 @@ class _LandingScreenState extends State<LandingScreen>
       ),
     );
   }
+}
 
-  Widget _gradientButton({
-    required String label,
-    required IconData icon,
-    required bool loading,
-    required VoidCallback onPressed,
-  }) {
-    return Opacity(
-      opacity: loading ? 0.5 : 1.0,
-      child: GestureDetector(
-        onTap: loading ? null : onPressed,
-        child: Container(
-          height: 56,
-          decoration: BoxDecoration(
-            gradient: AppTheme.primaryGradient,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x447C5CFC),
-                blurRadius: 12,
-                offset: Offset(0, 4),
+/// ── Reusable card with accent label + icon ─────────────────────
+class _ActionCard extends StatelessWidget {
+  final String label;
+  final String subtext;
+  final IconData icon;
+  final Color accent;
+  final Color accentBg;
+  final Widget child;
+
+  const _ActionCard({
+    required this.label,
+    required this.subtext,
+    required this.icon,
+    required this.accent,
+    required this.accentBg,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        border: Border.all(color: AppTheme.border, width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: accentBg,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                ),
+                child: Icon(icon, color: accent, size: 20),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.ink,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtext,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppTheme.inkSecondary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          child: Center(
+          const SizedBox(height: 18),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+/// ── Primary button (ink filled) ────────────────────────────────
+class _PrimaryButton extends StatelessWidget {
+  final String label;
+  final IconData? icon;
+  final bool loading;
+  final VoidCallback onPressed;
+
+  const _PrimaryButton({
+    required this.label,
+    this.icon,
+    required this.loading,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: loading ? 0.6 : 1.0,
+      child: Material(
+        color: AppTheme.ink,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          onTap: loading ? null : onPressed,
+          child: Container(
+            height: 52,
+            alignment: Alignment.center,
             child: loading
                 ? const SizedBox(
-                    height: 22,
-                    width: 22,
+                    height: 20,
+                    width: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Colors.white,
+                      color: AppTheme.background,
                     ),
                   )
                 : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(icon, color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
+                      if (icon != null) ...[
+                        Icon(icon, color: AppTheme.background, size: 20),
+                        const SizedBox(width: 8),
+                      ],
                       Text(
                         label,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: AppTheme.background,
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
                         ),

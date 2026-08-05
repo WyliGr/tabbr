@@ -2,21 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../config/theme.dart';
 import '../models/member.dart';
 import '../providers/expense_provider.dart';
-
-/// Design tokens (kept local so widgets render correctly regardless of theme).
-class _T {
-  static const bg = Color(0xFF0F1115);
-  static const surface = Color(0xFF1A1D24);
-  static const surfaceElevated = Color(0xFF22262E);
-  static const primary = Color(0xFF7C5CFC);
-  static const primaryBlue = Color(0xFF5B8DEF);
-  static const negative = Color(0xFFFF6B6B);
-  static const textPrimary = Color(0xFFF5F7FA);
-  static const textMuted = Color(0xFF5C6378);
-  static const divider = Color(0xFF2A2E38);
-}
 
 class ExpenseForm extends StatefulWidget {
   const ExpenseForm({super.key});
@@ -51,14 +39,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
       firstDate: DateTime(2000),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (context, child) => Theme(
-        data: ThemeData.dark().copyWith(
-          colorScheme: const ColorScheme.dark(
-            primary: _T.primary,
-            onPrimary: Colors.white,
-            surface: _T.surfaceElevated,
-            onSurface: _T.textPrimary,
-          ),
-          dialogTheme: const DialogThemeData(backgroundColor: _T.surfaceElevated),
+        data: Theme.of(context).copyWith(
+          colorScheme: Theme.of(context).colorScheme.copyWith(
+                primary: AppTheme.accent,
+                onPrimary: AppTheme.background,
+              ),
         ),
         child: child!,
       ),
@@ -98,54 +83,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
     }
   }
 
-  InputDecoration _inputDecoration({
-    required String label,
-    IconData? icon,
-    Widget? suffix,
-  }) {
-    return InputDecoration(
-      labelText: label,
-      labelStyle: const TextStyle(
-        color: _T.textMuted,
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.5,
-      ),
-      floatingLabelStyle: const TextStyle(
-        color: _T.primary,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.5,
-      ),
-      filled: true,
-      fillColor: _T.surface,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      prefixIcon: icon != null
-          ? Padding(
-              padding: const EdgeInsets.only(left: 14, right: 10),
-              child: Icon(icon, size: 20, color: _T.textMuted),
-            )
-          : null,
-      suffixIcon: suffix,
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: _T.divider, width: 1),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: _T.primary, width: 1.5),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: _T.negative, width: 1),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: _T.negative, width: 1.5),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final members = context.watch<ExpenseProvider>().members;
@@ -157,13 +94,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
       ),
       child: Container(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-        decoration: const BoxDecoration(
-          color: _T.bg,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-          border: Border(
-            top: BorderSide(color: _T.divider, width: 0.5),
-          ),
-        ),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -171,60 +101,59 @@ class _ExpenseFormState extends State<ExpenseForm> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Drag handle
+                // ── Drag handle ──
                 Center(
                   child: Container(
-                    width: 40,
+                    width: 36,
                     height: 4,
                     margin: const EdgeInsets.only(top: 12, bottom: 20),
                     decoration: BoxDecoration(
-                      color: _T.divider,
+                      color: AppTheme.borderStrong,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
                 ),
-                // Title
+                // ── Title ──
                 const Text(
-                  'Add expense',
+                  'New expense',
                   style: TextStyle(
-                    color: _T.textPrimary,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
+                    color: AppTheme.ink,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 24),
 
-                // Large amount input
+                // ── Amount (hero input) ──
                 const Text(
                   'AMOUNT',
                   style: TextStyle(
-                    color: _T.textMuted,
+                    color: AppTheme.inkMuted,
                     fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.8,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
-                    color: _T.surface,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: _T.divider, width: 1),
+                    color: AppTheme.surfaceDim,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
-                    vertical: 8,
+                    vertical: 6,
                   ),
                   child: Row(
                     textBaseline: TextBaseline.alphabetic,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     children: [
                       Text(
-                        '€',
+                        '\u20AC',
                         style: TextStyle(
-                          color: _T.textMuted,
-                          fontSize: 26,
+                          color: AppTheme.inkMuted,
+                          fontSize: 28,
                           fontWeight: FontWeight.w700,
                           height: 1.6,
                         ),
@@ -237,21 +166,22 @@ class _ExpenseFormState extends State<ExpenseForm> {
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
                           ),
+                          autofocus: true,
                           textAlign: TextAlign.left,
                           style: const TextStyle(
-                            color: _T.textPrimary,
+                            color: AppTheme.ink,
                             fontSize: 32,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -0.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -1.0,
                             height: 1.4,
                           ),
                           decoration: InputDecoration(
                             hintText: '0.00',
                             hintStyle: const TextStyle(
-                              color: _T.textMuted,
+                              color: AppTheme.inkMuted,
                               fontSize: 32,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: -0.5,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -1.0,
                               height: 1.4,
                             ),
                             border: InputBorder.none,
@@ -276,14 +206,14 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 ),
                 const SizedBox(height: 18),
 
-                // Description
+                // ── Description ──
                 TextFormField(
                   controller: _descriptionController,
                   textCapitalization: TextCapitalization.sentences,
-                  style: const TextStyle(color: _T.textPrimary, fontSize: 15),
-                  decoration: _inputDecoration(
-                    label: 'Description',
-                    icon: Icons.description_rounded,
+                  style: const TextStyle(color: AppTheme.ink, fontSize: 15),
+                  decoration: const InputDecoration(
+                    labelText: 'What was it for?',
+                    hintText: 'Dinner, groceries, gas\u2026',
                   ),
                   validator: (v) {
                     if (v == null || v.trim().isEmpty) {
@@ -294,15 +224,14 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 ),
                 const SizedBox(height: 14),
 
-                // Paid by — styled DropdownButtonFormField
+                // ── Paid by ──
                 DropdownButtonFormField<int>(
                   initialValue: _payerId,
-                  style: const TextStyle(color: _T.textPrimary, fontSize: 15),
-                  dropdownColor: _T.surfaceElevated,
-                  iconEnabledColor: _T.textMuted,
-                  decoration: _inputDecoration(
-                    label: 'Paid by',
-                    icon: Icons.person_rounded,
+                  style: const TextStyle(color: AppTheme.ink, fontSize: 15),
+                  dropdownColor: AppTheme.surface,
+                  iconEnabledColor: AppTheme.inkSecondary,
+                  decoration: const InputDecoration(
+                    labelText: 'Paid by',
                   ),
                   items: members
                       .map<DropdownMenuItem<int>>(
@@ -319,56 +248,50 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 ),
                 const SizedBox(height: 14),
 
-                // Date — tappable card
+                // ── Date ──
                 InkWell(
                   onTap: _pickDate,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: _T.surface,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: _T.divider, width: 1),
+                      color: AppTheme.surface,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                      border: Border.all(color: AppTheme.border, width: 1),
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
-                      vertical: 16,
+                      vertical: 14,
                     ),
                     child: Row(
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Icon(
-                            Icons.calendar_today_rounded,
-                            size: 20,
-                            color: _T.textMuted,
-                          ),
-                        ),
-                        const Text(
-                          'DATE',
-                          style: TextStyle(
-                            color: _T.textMuted,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 0.5,
-                          ),
+                        const Icon(
+                          Icons.calendar_today_rounded,
+                          size: 18,
+                          color: AppTheme.inkSecondary,
                         ),
                         const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            dateFormat.format(_date),
-                            textAlign: TextAlign.right,
-                            style: const TextStyle(
-                              color: _T.textPrimary,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                            ),
+                        const Text(
+                          'Date',
+                          style: TextStyle(
+                            color: AppTheme.inkSecondary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const Spacer(),
+                        Text(
+                          dateFormat.format(_date),
+                          style: const TextStyle(
+                            color: AppTheme.ink,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
                         const Icon(
                           Icons.chevron_right_rounded,
-                          size: 20,
-                          color: _T.textMuted,
+                          size: 18,
+                          color: AppTheme.inkMuted,
                         ),
                       ],
                     ),
@@ -383,10 +306,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: _T.negative.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppTheme.negative.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       border: Border.all(
-                        color: _T.negative.withValues(alpha: 0.3),
+                        color: AppTheme.negative.withValues(alpha: 0.2),
                         width: 1,
                       ),
                     ),
@@ -395,14 +318,14 @@ class _ExpenseFormState extends State<ExpenseForm> {
                         const Icon(
                           Icons.error_outline_rounded,
                           size: 18,
-                          color: _T.negative,
+                          color: AppTheme.negative,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             _submitError!,
                             style: const TextStyle(
-                              color: _T.negative,
+                              color: AppTheme.negative,
                               fontSize: 13,
                             ),
                           ),
@@ -414,66 +337,52 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
                 const SizedBox(height: 22),
 
-                // Submit button — gradient
-                Container(
-                  height: 52,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [_T.primary, _T.primaryBlue],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: _T.primary.withValues(alpha: 0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
+                // ── Submit ──
+                Opacity(
+                  opacity: _submitting ? 0.6 : 1.0,
                   child: Material(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(14),
+                    color: AppTheme.ink,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       onTap: _submitting ? null : _submit,
-                      child: Center(
+                      child: Container(
+                        height: 52,
+                        alignment: Alignment.center,
                         child: _submitting
                             ? const SizedBox(
-                                height: 22,
-                                width: 22,
+                                height: 20,
+                                width: 20,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 2.2,
-                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                  color: AppTheme.background,
                                 ),
                               )
                             : const Text(
                                 'Add expense',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.2,
+                                  color: AppTheme.background,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 TextButton(
                   onPressed: _submitting
                       ? null
                       : () => Navigator.of(context).pop(),
                   style: TextButton.styleFrom(
-                    foregroundColor: _T.textMuted,
+                    foregroundColor: AppTheme.inkSecondary,
                     minimumSize: const Size.fromHeight(44),
                   ),
                   child: const Text(
                     'Cancel',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
