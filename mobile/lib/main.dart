@@ -17,6 +17,8 @@ Future<void> main() async {
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: AppTheme.background,
+      systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
   final config = await ApiConfig.load();

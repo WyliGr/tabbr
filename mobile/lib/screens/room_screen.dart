@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../config/theme.dart';
 import '../providers/expense_provider.dart';
 import '../providers/room_provider.dart';
 import '../widgets/balance_card.dart';
@@ -195,7 +196,17 @@ class _RoomScreenState extends State<RoomScreen>
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tabbr'),
+        title: Text(
+          (room.name != null && room.name!.isNotEmpty)
+              ? room.name!
+              : 'Tabbr',
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
+            color: AppTheme.textPrimary,
+          ),
+        ),
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert_rounded),
@@ -242,23 +253,24 @@ class _RoomScreenState extends State<RoomScreen>
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
               child: RoomCodeBanner(
                 code: room.code,
                 roomName: room.name,
               ),
             ),
-            TabBar(
-              controller: _tabController,
-              tabs: const [
-                Tab(text: 'Expenses'),
-                Tab(text: 'Balance'),
-                Tab(text: 'Members'),
-              ],
+            // Pill-style TabBar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: _PillTabBar(
+                controller: _tabController,
+                tabs: const ['Expenses', 'Balance', 'Members'],
+              ),
             ),
             Expanded(
               child: RefreshIndicator(
                 onRefresh: _refresh,
+                color: AppTheme.primaryAccent,
                 child: TabBarView(
                   controller: _tabController,
                   children: const [
@@ -272,23 +284,178 @@ class _RoomScreenState extends State<RoomScreen>
           ],
         ),
       ),
-      floatingActionButton: _tabController.index == 0
-          ? FloatingActionButton.extended(
-              onPressed: _openAddExpenseSheet,
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('Expense'),
-            )
-          : _tabController.index == 2
-              ? FloatingActionButton.extended(
-                  onPressed: _addMember,
-                  icon: const Icon(Icons.person_add_alt_1_rounded),
-                  label: const Text('Member'),
-                )
-              : null,
+      floatingActionButton: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        transitionBuilder: (child, anim) {
+          return FadeTransition(
+            opacity: anim,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.8, end: 1.0).animate(anim),
+              child: child,
+            ),
+          );
+        },
+        child: _buildFab(),
+      ),
+    );
+  }
+
+  Widget? _buildFab() {
+    if (_tabController.index == 0) {
+      return _GradientFab(
+        key: const ValueKey('expense'),
+        icon: Icons.add_rounded,
+        label: 'Expense',
+        onPressed: _openAddExpenseSheet,
+      );
+    } else if (_tabController.index == 2) {
+      return _GradientFab(
+        key: const ValueKey('member'),
+        icon: Icons.person_add_alt_1_rounded,
+        label: 'Member',
+        onPressed: _addMember,
+      );
+    }
+    return null;
+  }
+}
+
+// ── Pill-style tab bar with rounded background behind active tab ──
+class _PillTabBar extends StatelessWidget {
+  final TabController controller;
+  final List<String> tabs;
+
+  const _PillTabBar({required this.controller, required this.tabs});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 44,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.border),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final tabWidth = constraints.maxWidth / tabs.length;
+          return Stack(
+            children: [
+              // Animated pill indicator
+              AnimatedBuilder(
+                animation: controller,
+                builder: (_, _) {
+                  final left = controller.offset * tabWidth +
+                      controller.index * tabWidth;
+                  return Positioned(
+                    left: left,
+                    top: 0,
+                    bottom: 0,
+                    width: tabWidth,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      decoration: BoxDecoration(
+                        gradient: AppTheme.primaryGradient,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x337C5CFC),
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+              // Tab labels
+              Row(
+                children: tabs.asMap().entries.map((entry) {
+                  final i = entry.key;
+                  final label = entry.value;
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () => controller.animateTo(i),
+                      child: Center(
+                        child: AnimatedBuilder(
+                          animation: controller,
+                          builder: (_, _) {
+                            final active = controller.index == i;
+                            return Text(
+                              label,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: active
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                color: active
+                                    ? Colors.white
+                                    : AppTheme.textSecondary,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
 
+// ── Gradient FAB ──
+class _GradientFab extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+
+  const _GradientFab({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        height: 52,
+        padding: const EdgeInsets.symmetric(horizontal: 22),
+        decoration: BoxDecoration(
+          gradient: AppTheme.primaryGradient,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: AppTheme.fabShadow(),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: Colors.white, size: 22),
+            const SizedBox(width: 10),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Members tab ──
 class _MembersTab extends StatelessWidget {
   const _MembersTab();
 
@@ -312,6 +479,7 @@ class _MembersTab extends StatelessWidget {
   }
 }
 
+// ── Summary stats row ──
 class _SummaryRow extends StatelessWidget {
   final int memberCount;
   final int expenseCount;
@@ -323,29 +491,45 @@ class _SummaryRow extends StatelessWidget {
     required this.balanceCount,
   });
 
-  Widget _stat(BuildContext context, String label, int value, IconData icon) {
+  Widget _stat(String label, int value, IconData icon) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(16),
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppTheme.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: Theme.of(context).colorScheme.primary, size: 18),
-            const SizedBox(height: 8),
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: AppTheme.surfaceElevated,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, color: AppTheme.primaryAccent, size: 16),
+            ),
+            const SizedBox(height: 10),
             Text(
               '$value',
               style: const TextStyle(
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.w800,
+                color: AppTheme.textPrimary,
               ),
             ),
+            const SizedBox(height: 2),
             Text(
-              label,
-              style: const TextStyle(color: Colors.white60, fontSize: 12),
+              label.toUpperCase(),
+              style: const TextStyle(
+                color: AppTheme.textMuted,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.8,
+              ),
             ),
           ],
         ),
@@ -357,11 +541,11 @@ class _SummaryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _stat(context, 'Members', memberCount, Icons.group_rounded),
-        const SizedBox(width: 8),
-        _stat(context, 'Expenses', expenseCount, Icons.receipt_long_rounded),
-        const SizedBox(width: 8),
-        _stat(context, 'Owed', balanceCount, Icons.swap_horiz_rounded),
+        _stat('Members', memberCount, Icons.group_rounded),
+        const SizedBox(width: 10),
+        _stat('Expenses', expenseCount, Icons.receipt_long_rounded),
+        const SizedBox(width: 10),
+        _stat('Owed', balanceCount, Icons.swap_horiz_rounded),
       ],
     );
   }

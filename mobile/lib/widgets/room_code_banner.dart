@@ -20,13 +20,23 @@ class RoomCodeBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 18, 12, 18),
+      padding: const EdgeInsets.fromLTRB(20, 20, 12, 20),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(16),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF7C5CFC), Color(0xFF5B8DEF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x337C5CFC),
+            blurRadius: 16,
+            offset: Offset(0, 6),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -37,35 +47,47 @@ class RoomCodeBanner extends StatelessWidget {
                 if (roomName != null && roomName!.isNotEmpty) ...[
                   Text(
                     roomName!,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
+                  const SizedBox(height: 8),
+                ] else
                   const SizedBox(height: 4),
-                ],
                 Text(
                   'ROOM CODE',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Colors.white54,
-                        letterSpacing: 1.2,
-                      ),
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.2,
+                    color: Colors.white.withValues(alpha: 0.7),
+                  ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Text(
                   code,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 3,
-                        color: colorScheme.primary,
-                      ),
+                  style: const TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 4,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
           ),
-          IconButton(
-            onPressed: () => _copy(context),
-            icon: const Icon(Icons.copy_rounded),
-            tooltip: 'Copy code',
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: IconButton(
+              onPressed: () => _copy(context),
+              icon: const Icon(Icons.copy_rounded, color: Colors.white),
+              tooltip: 'Copy code',
+            ),
           ),
         ],
       ),
