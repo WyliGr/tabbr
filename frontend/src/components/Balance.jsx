@@ -1,6 +1,6 @@
 import { colorFor, formatCurrency, initials } from '../utils.js'
 
-export default function Balance({ balance, persons }) {
+export default function Balance({ balance, members }) {
   const balances = Array.isArray(balance) ? balance : []
 
   return (

@@ -4,7 +4,7 @@ import { todayInputValue } from '../utils.js'
 const MODE_EQUAL = 'equal'
 const MODE_CUSTOM = 'custom'
 
-export default function ExpenseForm({ persons, onSubmit }) {
+export default function ExpenseForm({ members, onSubmit }) {
   const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
   const [payerId, setPayerId] = useState('')
@@ -15,27 +15,27 @@ export default function ExpenseForm({ persons, onSubmit }) {
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
-    if (!persons.length) {
+    if (!members.length) {
       setPayerId('')
       return
     }
-    if (!persons.find((p) => String(p.id) === String(payerId))) {
-      setPayerId(String(persons[0].id))
+    if (!members.find((m) => String(m.id) === String(payerId))) {
+      setPayerId(String(members[0].id))
     }
-  }, [persons, payerId])
+  }, [members, payerId])
 
   useEffect(() => {
     const next = {}
-    persons.forEach((p) => {
-      next[p.id] = true
+    members.forEach((m) => {
+      next[m.id] = true
     })
     setIncluded(next)
-  }, [persons])
+  }, [members])
 
   const amountNum = Number(amount)
-  const includedPersons = useMemo(
-    () => persons.filter((p) => included[p.id]),
-    [persons, included]
+  const includedMembers = useMemo(
+    () => members.filter((m) => included[m.id]),
+    [members, included]
   )
 
   const splitsTotal = useMemo(() => {
@@ -49,16 +49,16 @@ export default function ExpenseForm({ persons, onSubmit }) {
 
   const splitsValid = useMemo(() => {
     if (mode !== MODE_CUSTOM) return true
-    if (includedPersons.length === 0) return false
+    if (includedMembers.length === 0) return false
     const diff = Math.abs(amountNum - splitsTotal)
     return diff < 0.01 && splitsTotal > 0
-  }, [mode, amountNum, splitsTotal, includedPersons.length])
+  }, [mode, amountNum, splitsTotal, includedMembers.length])
 
   const splitsMismatch = mode === MODE_CUSTOM && amountNum > 0 && !splitsValid
 
   const canSubmit =
     !submitting &&
-    persons.length > 0 &&
+    members.length > 0 &&
     description.trim().length > 0 &&
     Number.isFinite(amountNum) &&
     amountNum > 0 &&
@@ -70,11 +70,11 @@ export default function ExpenseForm({ persons, onSubmit }) {
   }
 
   function distributeEvenly() {
-    if (!amountNum || includedPersons.length === 0) return
-    const each = amountNum / includedPersons.length
+    if (!amountNum || includedMembers.length === 0) return
+    const each = amountNum / includedMembers.length
     const next = { ...shares }
-    persons.forEach((p) => {
-      next[p.id] = included[p.id] ? Number(each.toFixed(2)) : 0
+    members.forEach((m) => {
+      next[m.id] = included[m.id] ? Number(each.toFixed(2)) : 0
     })
     setShares(next)
   }
@@ -91,9 +91,9 @@ export default function ExpenseForm({ persons, onSubmit }) {
         date: new Date(`${date}T12:00:00`).toISOString(),
       }
       if (mode === MODE_CUSTOM) {
-        payload.splits = includedPersons.map((p) => ({
-          person_id: p.id,
-          share: Number(shares[p.id] || 0),
+        payload.splits = includedMembers.map((m) => ({
+          member_id: m.id,
+          share: Number(shares[m.id] || 0),
         }))
       }
       await onSubmit(payload)
@@ -102,8 +102,8 @@ export default function ExpenseForm({ persons, onSubmit }) {
       setDate(todayInputValue())
       setMode(MODE_EQUAL)
       const reset = {}
-      persons.forEach((p) => {
-        reset[p.id] = true
+      members.forEach((m) => {
+        reset[m.id] = true
       })
       setIncluded(reset)
       setShares({})
@@ -121,7 +121,7 @@ export default function ExpenseForm({ persons, onSubmit }) {
         </h2>
       </header>
       <div className="card-body">
-        {persons.length === 0 ? (
+        {members.length === 0 ? (
           <div className="empty">
             Add people first to start splitting expenses.
           </div>
@@ -170,9 +170,9 @@ export default function ExpenseForm({ persons, onSubmit }) {
                   value={payerId}
                   onChange={(e) => setPayerId(e.target.value)}
                 >
-                  {persons.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
+                  {members.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.name}
                     </option>
                   ))}
                 </select>
@@ -227,25 +227,25 @@ export default function ExpenseForm({ persons, onSubmit }) {
               <div className="field">
                 <span className="field-label">Between</span>
                 <div className="split-list">
-                  {persons.map((p) => (
+                  {members.map((m) => (
                     <label
-                      key={p.id}
+                      key={m.id}
                       className={`split-row${
-                        included[p.id] ? ' is-included' : ''
+                        included[m.id] ? ' is-included' : ''
                       }`}
                     >
                       <span
                         className={`split-name${
-                          !included[p.id] ? ' is-muted' : ''
+                          !included[m.id] ? ' is-muted' : ''
                         }`}
                       >
                         <input
                           type="checkbox"
                           className="split-checkbox"
-                          checked={!!included[p.id]}
-                          onChange={() => togglePerson(p.id)}
+                          checked={!!included[m.id]}
+                          onChange={() => togglePerson(m.id)}
                         />
-                        {p.name}
+                        {m.name}
                       </span>
                       <span
                         className="split-input"
@@ -256,8 +256,8 @@ export default function ExpenseForm({ persons, onSubmit }) {
                           padding: '0 10px',
                         }}
                       >
-                        {included[p.id] && includedPersons.length > 0
-                          ? (amountNum / includedPersons.length || 0).toFixed(
+                        {included[m.id] && includedMembers.length > 0
+                          ? (amountNum / includedMembers.length || 0).toFixed(
                               2
                             )
                           : '—'}
@@ -282,43 +282,43 @@ export default function ExpenseForm({ persons, onSubmit }) {
                     className="btn btn-ghost"
                     style={{ height: 28, padding: '0 12px', fontSize: 12 }}
                     onClick={distributeEvenly}
-                    disabled={!amountNum || includedPersons.length === 0}
+                    disabled={!amountNum || includedMembers.length === 0}
                   >
                     Distribute evenly
                   </button>
                 </div>
                 <div className="split-list">
-                  {persons.map((p) => (
+                  {members.map((m) => (
                     <label
-                      key={p.id}
+                      key={m.id}
                       className={`split-row${
-                        included[p.id] ? ' is-included' : ''
+                        included[m.id] ? ' is-included' : ''
                       }`}
                     >
                       <span
                         className={`split-name${
-                          !included[p.id] ? ' is-muted' : ''
+                          !included[m.id] ? ' is-muted' : ''
                         }`}
                       >
                         <input
                           type="checkbox"
                           className="split-checkbox"
-                          checked={!!included[p.id]}
-                          onChange={() => togglePerson(p.id)}
+                          checked={!!included[m.id]}
+                          onChange={() => togglePerson(m.id)}
                         />
-                        {p.name}
+                        {m.name}
                       </span>
                       <input
                         type="number"
                         className="split-input"
                         min="0"
                         step="0.01"
-                        value={shares[p.id] ?? ''}
-                        disabled={!included[p.id]}
+                        value={shares[m.id] ?? ''}
+                        disabled={!included[m.id]}
                         onChange={(e) =>
                           setShares((prev) => ({
                             ...prev,
-                            [p.id]: e.target.value,
+                            [m.id]: e.target.value,
                           }))
                         }
                         placeholder="0.00"
@@ -328,7 +328,7 @@ export default function ExpenseForm({ persons, onSubmit }) {
                 </div>
                 <div className="split-hint">
                   <span>
-                    {includedPersons.length} included ·{' '}
+                    {includedMembers.length} included ·{' '}
                     {formatNum(splitsTotal)}
                   </span>
                   <span

@@ -1,152 +1,79 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api } from './api.js'
-import Header from './components/Header.jsx'
-import Stats from './components/Stats.jsx'
-import ExpenseForm from './components/ExpenseForm.jsx'
-import Balance from './components/Balance.jsx'
-import Persons from './components/Persons.jsx'
-import ExpensesTable from './components/ExpensesTable.jsx'
+import Landing from './components/Landing.jsx'
+import RoomView from './components/RoomView.jsx'
 import Toast from './components/Toast.jsx'
 
 function App() {
-  const [persons, setPersons] = useState([])
-  const [expenses, setExpenses] = useState([])
-  const [balance, setBalance] = useState({ balances: [] })
+  const [room, setRoom] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [toast, setToast] = useState(null)
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type, id: Date.now() })
   }, [])
 
-  const refresh = useCallback(async () => {
-    try {
-      const [ps, es, bs] = await Promise.all([
-        api.listPersons(),
-        api.listExpenses(),
-        api.getBalance(),
-      ])
-      setPersons(ps)
-      setExpenses(es)
-      setBalance(bs)
-    } catch (err) {
-      showToast(err.message || 'Failed to load', 'error')
-    }
-  }, [showToast])
-
   useEffect(() => {
     let cancelled = false
+    const code = api.loadStoredCode()
+    if (!code) {
+      setLoading(false)
+      return
+    }
     setLoading(true)
-    refresh().finally(() => {
-      if (!cancelled) setLoading(false)
-    })
+    api
+      .getRoom(code)
+      .then((r) => {
+        if (cancelled) return
+        setRoom(r)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        api.clearStoredCode()
+        setError(err.message || 'Could not load room')
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
     return () => {
       cancelled = true
     }
-  }, [refresh])
+  }, [])
 
-  const handleAddPerson = useCallback(
-    async (name) => {
-      try {
-        await api.createPerson(name)
-        await refresh()
-        showToast(`Added ${name}`)
-      } catch (err) {
-        showToast(err.message || 'Could not add person', 'error')
-        throw err
-      }
-    },
-    [refresh, showToast]
-  )
+  const handleJoined = useCallback((r) => {
+    setRoom(r)
+    setError(null)
+  }, [])
 
-  const handleDeletePerson = useCallback(
-    async (id) => {
-      try {
-        await api.deletePerson(id)
-        await refresh()
-        showToast('Person removed')
-      } catch (err) {
-        showToast(err.message || 'Could not delete', 'error')
-      }
-    },
-    [refresh, showToast]
-  )
+  const handleLeave = useCallback(() => {
+    api.clearStoredCode()
+    setRoom(null)
+  }, [])
 
-  const handleAddExpense = useCallback(
-    async (payload) => {
-      try {
-        await api.createExpense(payload)
-        await refresh()
-        showToast('Expense added')
-      } catch (err) {
-        showToast(err.message || 'Could not save expense', 'error')
-        throw err
-      }
-    },
-    [refresh, showToast]
-  )
+  if (loading) {
+    return (
+      <div className="app">
+        <div className="loading-bar is-loading" />
+      </div>
+    )
+  }
 
-  const handleDeleteExpense = useCallback(
-    async (id) => {
-      try {
-        await api.deleteExpense(id)
-        await refresh()
-        showToast('Expense removed')
-      } catch (err) {
-        showToast(err.message || 'Could not delete expense', 'error')
-      }
-    },
-    [refresh, showToast]
-  )
-
-  const totalAmount = expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0)
+  if (room) {
+    return <RoomView api={api} room={room} onLeave={handleLeave} />
+  }
 
   return (
-    <div className="app">
-      <div className={`loading-bar${loading ? ' is-loading' : ''}`} />
-      <Header />
-      <main className="main">
-        <div className="container">
-          <Stats
-            personsCount={persons.length}
-            expensesCount={expenses.length}
-            totalAmount={totalAmount}
-          />
-
-          <div className="grid">
-            <ExpenseForm
-              persons={persons}
-              onSubmit={handleAddExpense}
-            />
-            <Balance
-              balance={balance.balances}
-              persons={persons}
-            />
-          </div>
-
-          <div className="grid">
-            <Persons
-              persons={persons}
-              onAdd={handleAddPerson}
-              onDelete={handleDeletePerson}
-            />
-            <ExpensesTable
-              expenses={expenses}
-              persons={persons}
-              onDelete={handleDeleteExpense}
-            />
-          </div>
-        </div>
-      </main>
-
-      <footer className="footer">
-        <div className="container">
-          tabbr · keep tabs, split bills, settle up
-        </div>
-      </footer>
-
-      <Toast toast={toast} onDismiss={() => setToast(null)} />
-    </div>
+    <>
+      <Landing api={api} onJoined={handleJoined} />
+      <Toast
+        toast={error ? { message: error, type: 'error', id: Date.now() } : toast}
+        onDismiss={() => {
+          setError(null)
+          setToast(null)
+        }}
+      />
+    </>
   )
 }
 

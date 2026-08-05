@@ -1,7 +1,7 @@
 import { formatCurrency, formatDateShort } from '../utils.js'
 
-export default function ExpensesTable({ expenses, persons, onDelete }) {
-  const byId = new Map(persons.map((p) => [p.id, p]))
+export default function ExpensesTable({ expenses, members, onDelete }) {
+  const byId = new Map(members.map((m) => [m.id, m]))
 
   return (
     <section className="card">
@@ -46,10 +46,10 @@ export default function ExpensesTable({ expenses, persons, onDelete }) {
                   <td className="col-splits">
                     <div className="expense-splits">
                       {e.splits.map((s) => {
-                        const person = byId.get(s.person_id)
+                        const member = byId.get(s.member_id)
                         return (
-                          <span className="split-tag" key={s.person_id}>
-                            {person?.name ?? `#${s.person_id}`}{' '}
+                          <span className="split-tag" key={s.member_id}>
+                            {member?.name ?? `#${s.member_id}`}{' '}
                             {formatCurrency(s.share)}
                           </span>
                         )

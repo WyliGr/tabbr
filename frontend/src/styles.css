@@ -187,6 +187,235 @@ a {
   }
 }
 
+/* ---------- Landing ---------- */
+
+.landing {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.landing-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-back {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 18px;
+  transition: color var(--transition), background var(--transition);
+}
+
+.landing-back:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.landing-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+.landing-title {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.landing-sub {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+
+.landing-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.landing-code {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  letter-spacing: 0.3em;
+  text-align: center;
+  text-transform: uppercase;
+  height: 56px;
+}
+
+.landing-error {
+  font-size: 12.5px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  margin-bottom: 14px;
+}
+
+/* ---------- Room banner ---------- */
+
+.room-banner {
+  position: sticky;
+  top: 64px;
+  z-index: 40;
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.room-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+}
+
+.room-banner-info {
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.room-banner-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+
+.room-banner-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.room-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 14px;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.room-code:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.room-code-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-tertiary);
+}
+
+.room-code-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.18em;
+}
+
+.room-code-copy {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  min-width: 38px;
+  text-align: right;
+}
+
+.room-banner-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-danger {
+  color: var(--accent);
+  border-color: var(--border);
+}
+
+.btn-danger:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+@media (max-width: 720px) {
+  .room-banner-inner {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 16px;
+  }
+  .room-banner-info {
+    flex: 1 1 auto;
+  }
+  .room-banner-name {
+    max-width: 100%;
+  }
+  .room-banner-actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .room-code {
+    order: 3;
+  }
+}
+
+@media (max-width: 480px) {
+  .room-code {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .room-banner-actions .btn {
+    padding: 0 12px;
+    font-size: 12px;
+  }
+}
+
 /* ---------- Stats strip ---------- */
 
 .stats {
