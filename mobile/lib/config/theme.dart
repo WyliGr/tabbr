@@ -219,13 +219,13 @@ class AppTheme {
 
   // ── Light theme ──────────────────────────────────────────────
   static ThemeData lightTheme() => _buildTheme(
-        const AppColors.light,
+        AppColors.light,
         Brightness.light,
       );
 
   // ── Dark theme ───────────────────────────────────────────────
   static ThemeData darkTheme() => _buildTheme(
-        const AppColors.dark,
+        AppColors.dark,
         Brightness.dark,
       );
 
