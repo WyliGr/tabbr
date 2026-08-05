@@ -211,11 +211,16 @@ async def create_expense(payload: ExpenseCreate) -> ExpenseOut:
         if payer is None:
             raise HTTPException(status_code=404, detail="Payer not found")
 
+        # Strip timezone info to match TIMESTAMP WITHOUT TIME ZONE columns
+        expense_date = payload.date
+        if expense_date and expense_date.tzinfo is not None:
+            expense_date = expense_date.replace(tzinfo=None)
+
         expense = Expense(
             amount=payload.amount,
             description=payload.description,
             payer_id=payload.payer_id,
-            date=payload.date or datetime.utcnow(),
+            date=expense_date or datetime.utcnow(),
         )
         session.add(expense)
         await session.flush()
