@@ -2,54 +2,56 @@
 
 Keep tabs. Split bills. Settle up.
 
-A self-hostable expense sharing app — use the cloud or run your own instance.
+A self-hostable expense sharing app. Backend API + mobile app.
 
-## Features
-- Add expenses (amount, payer, description, date)
-- Auto-calculate who owes whom
-- Clean minimal UI
+## Structure
 
-## Stack
-- **Frontend**: React + Vite
-- **Backend**: FastAPI (Python)
-- **Database**: PostgreSQL
-- **Deploy**: Docker Compose
+```
+tabbr/
+  backend/          FastAPI + SQLAlchemy async (API server)
+  mobile/           Flutter app (Android)
+  docker-compose.yml
+```
 
-## Deploy
+## Backend
 
-### Docker Compose (local)
+FastAPI + PostgreSQL. Room-based expense sharing with 5-letter codes.
+
+### Run with Docker
 
 ```bash
 cp .env.example .env
-# edit .env to change default credentials
+# change POSTGRES_PASSWORD
 docker compose up --build -d
 ```
 
-### Portainer (stack from Git repo)
+API on http://localhost:8000
+Docs on http://localhost:8000/docs
 
-The `stack.env` file in the repo provides default values for all environment variables. Portainer reads it automatically when deploying via Repository.
+### Portainer
 
-In Portainer → Stacks → Add stack → Repository:
-1. Set the Git repo URL
-2. Set the compose path to `docker-compose.yml`
-3. Optionally override environment variables in the Portainer UI:
-   - `POSTGRES_DB` (default: tabbr)
-   - `POSTGRES_USER` (default: tabbr)
-   - `POSTGRES_PASSWORD` (default: tabbr — change this!)
-   - `PORT` (default: 3000)
+Deploy from Git repo using `docker-compose.yml` and `stack.env` for env vars.
 
-## Development
+### Local dev
 
-### Backend
 ```bash
 cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
+# uses SQLite fallback if no DATABASE_URL set
 ```
 
-### Frontend
+## Mobile app
+
+Flutter 3.44.8, Material 3 dark theme.
+
 ```bash
-cd frontend
-npm install
-npm run dev
+cd mobile
+flutter pub get
+flutter run          # debug on device
+flutter build apk    # release APK
 ```
+
+Download latest APK: https://github.com/WyliGr/tabbr/releases
+
+On first launch, enter your server URL (e.g. http://192.168.1.X:8000).
