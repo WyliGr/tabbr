@@ -3,13 +3,13 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-tricount}
-      POSTGRES_USER: ${POSTGRES_USER:-tricount}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tricount}
+      POSTGRES_DB: ${POSTGRES_DB:-tabbr}
+      POSTGRES_USER: ${POSTGRES_USER:-tabbr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tabbr}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tricount}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tabbr}"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -21,7 +21,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-tricount}:${POSTGRES_PASSWORD:-tricount}@db:5432/${POSTGRES_DB:-tricount}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-tabbr}:${POSTGRES_PASSWORD:-tabbr}@db:5432/${POSTGRES_DB:-tabbr}
 
   frontend:
     build: ./frontend

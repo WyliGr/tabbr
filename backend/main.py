@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, selectinload
 import os
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite+aiosqlite:////tmp/tricount.db")
+DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite+aiosqlite:////tmp/tabbr.db")
 
 engine = create_async_engine(DATABASE_URL, echo=False)
 async_session_maker = async_session_maker = async_sessionmaker(
@@ -132,7 +132,7 @@ class BalanceResponse(BaseModel):
     balances: List[BalanceEntry]
 
 
-app = FastAPI(title="Tricount Replica")
+app = FastAPI(title="Tabbr")
 
 app.add_middleware(
     CORSMiddleware,

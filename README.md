@@ -1,6 +1,8 @@
-# Tricount Replica
+# Tabbr
 
-Simple expense sharing webapp — a lightweight Tricount clone.
+Keep tabs. Split bills. Settle up.
+
+A self-hostable expense sharing app — use the cloud or run your own instance.
 
 ## Features
 - Add expenses (amount, payer, description, date)
@@ -31,9 +33,9 @@ In Portainer → Stacks → Add stack → Repository:
 1. Set the Git repo URL
 2. Set the compose path to `docker-compose.yml`
 3. Optionally override environment variables in the Portainer UI:
-   - `POSTGRES_DB` (default: tricount)
-   - `POSTGRES_USER` (default: tricount)
-   - `POSTGRES_PASSWORD` (default: tricount — change this!)
+   - `POSTGRES_DB` (default: tabbr)
+   - `POSTGRES_USER` (default: tabbr)
+   - `POSTGRES_PASSWORD` (default: tabbr — change this!)
    - `PORT` (default: 3000)
 
 ## Development

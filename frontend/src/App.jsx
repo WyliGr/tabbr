@@ -141,7 +141,7 @@ function App() {
 
       <footer className="footer">
         <div className="container">
-          tricount · split cleanly · all data lives on your local network
+          tabbr · keep tabs, split bills, settle up
         </div>
       </footer>
 
