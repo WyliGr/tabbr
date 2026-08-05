@@ -134,6 +134,7 @@ class _LandingScreenState extends State<LandingScreen>
   Widget build(BuildContext context) {
     final roomProvider = context.watch<RoomProvider>();
     final loading = roomProvider.status == RoomStatus.loading;
+    final c = AppColors.of(context);
 
     return Scaffold(
       body: SafeArea(
@@ -161,7 +162,7 @@ class _LandingScreenState extends State<LandingScreen>
                   children: [
                     const SizedBox(height: 72),
                     // ── Wordmark ──
-                    const Center(
+                    Center(
                       child: Text(
                         'tabbr',
                         textAlign: TextAlign.center,
@@ -169,19 +170,19 @@ class _LandingScreenState extends State<LandingScreen>
                           fontSize: 52,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -2.5,
-                          color: AppTheme.ink,
+                          color: c.ink,
                           height: 1,
                         ),
                       ),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
+                    Text(
                       'split expenses,\nkeep it simple',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 15,
                         height: 1.5,
-                        color: AppTheme.inkSecondary,
+                        color: c.inkSecondary,
                       ),
                     ),
                     const SizedBox(height: 64),
@@ -190,8 +191,8 @@ class _LandingScreenState extends State<LandingScreen>
                       label: 'Create a room',
                       subtext: 'Start a new expense group',
                       icon: Icons.add_rounded,
-                      accent: AppTheme.accent,
-                      accentBg: AppTheme.accentSoft,
+                      accent: c.accent,
+                      accentBg: c.accentSoft,
                       child: AnimatedSize(
                         duration: const Duration(milliseconds: 280),
                         curve: Curves.easeInOut,
@@ -239,8 +240,8 @@ class _LandingScreenState extends State<LandingScreen>
                       label: 'Join with code',
                       subtext: 'Enter a code shared with you',
                       icon: Icons.group_add_rounded,
-                      accent: AppTheme.positive,
-                      accentBg: AppTheme.positiveSoft,
+                      accent: c.positive,
+                      accentBg: c.positiveSoft,
                       child: Row(
                         children: [
                           Expanded(
@@ -253,11 +254,11 @@ class _LandingScreenState extends State<LandingScreen>
                                     RegExp(r'[A-Za-z0-9]')),
                                 LengthLimitingTextInputFormatter(8),
                               ],
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: 1.5,
-                                color: AppTheme.ink,
+                                color: c.ink,
                               ),
                               decoration: const InputDecoration(
                                 labelText: 'Room code',
@@ -274,8 +275,8 @@ class _LandingScreenState extends State<LandingScreen>
                               style: OutlinedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 22),
-                                backgroundColor: AppTheme.ink,
-                                foregroundColor: AppTheme.background,
+                                backgroundColor: c.ink,
+                                foregroundColor: c.background,
                                 side: BorderSide.none,
                               ),
                               child: const Text('Join'),
@@ -316,12 +317,13 @@ class _ActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: AppTheme.surface,
+        color: c.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppTheme.border, width: 1),
+        border: Border.all(color: c.border, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -344,19 +346,19 @@ class _ActionCard extends StatelessWidget {
                   children: [
                     Text(
                       label,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: AppTheme.ink,
+                        color: c.ink,
                         letterSpacing: -0.2,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       subtext,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
-                        color: AppTheme.inkSecondary,
+                        color: c.inkSecondary,
                       ),
                     ),
                   ],
@@ -388,10 +390,11 @@ class _PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Opacity(
       opacity: loading ? 0.6 : 1.0,
       child: Material(
-        color: AppTheme.ink,
+        color: c.ink,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         child: InkWell(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -400,25 +403,25 @@ class _PrimaryButton extends StatelessWidget {
             height: 52,
             alignment: Alignment.center,
             child: loading
-                ? const SizedBox(
+                ? SizedBox(
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: AppTheme.background,
+                      color: c.background,
                     ),
                   )
                 : Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (icon != null) ...[
-                        Icon(icon, color: AppTheme.background, size: 20),
+                        Icon(icon, color: c.background, size: 20),
                         const SizedBox(width: 8),
                       ],
                       Text(
                         label,
-                        style: const TextStyle(
-                          color: AppTheme.background,
+                        style: TextStyle(
+                          color: c.background,
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
                         ),

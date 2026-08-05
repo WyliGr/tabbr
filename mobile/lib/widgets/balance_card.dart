@@ -41,6 +41,7 @@ class _AllSettled extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -57,30 +58,30 @@ class _AllSettled extends StatelessWidget {
                     height: 64,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppTheme.positiveSoft,
+                      color: c.positiveSoft,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.check_rounded,
                       size: 32,
-                      color: AppTheme.positive,
+                      color: c.positive,
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
+                  Text(
                     'All settled up',
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.3,
-                      color: AppTheme.ink,
+                      color: c.ink,
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
+                  Text(
                     'No outstanding balances\nbetween members',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: AppTheme.inkSecondary,
+                      color: c.inkSecondary,
                       fontSize: 14,
                       height: 1.5,
                     ),
@@ -101,6 +102,7 @@ class _BalanceLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
       itemCount: 3,
@@ -109,7 +111,7 @@ class _BalanceLoading extends StatelessWidget {
         child: Container(
           height: 60,
           decoration: BoxDecoration(
-            color: AppTheme.surfaceDim,
+            color: c.surfaceDim,
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           ),
         ),
@@ -132,15 +134,16 @@ class _BalanceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     final currency = NumberFormat.currency(symbol: '', decimalDigits: 2);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.surface,
+          color: c.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.border, width: 1),
+          border: Border.all(color: c.border, width: 1),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         child: Row(
@@ -174,23 +177,23 @@ class _BalanceTile extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: entry.fromPersonName,
-                      style: const TextStyle(
-                        color: AppTheme.ink,
+                      style: TextStyle(
+                        color: c.ink,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const TextSpan(
+                    TextSpan(
                       text: ' owes ',
                       style: TextStyle(
-                        color: AppTheme.inkMuted,
+                        color: c.inkMuted,
                         fontSize: 14,
                       ),
                     ),
                     TextSpan(
                       text: entry.toPersonName,
-                      style: const TextStyle(
-                        color: AppTheme.inkSecondary,
+                      style: TextStyle(
+                        color: c.inkSecondary,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -203,12 +206,12 @@ class _BalanceTile extends StatelessWidget {
             // ── Amount ──
             Text(
               currency.format(entry.amount),
-              style: const TextStyle(
-                color: AppTheme.positive,
+              style: TextStyle(
+                color: c.positive,
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
-                fontFeatures: [FontFeature.tabularFigures()],
+                fontFeatures: const [FontFeature.tabularFigures()],
               ),
             ),
           ],

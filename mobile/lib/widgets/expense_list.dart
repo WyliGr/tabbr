@@ -44,6 +44,7 @@ class _EmptyExpenses extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -60,30 +61,30 @@ class _EmptyExpenses extends StatelessWidget {
                     height: 64,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppTheme.accentSoft,
+                      color: c.accentSoft,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.receipt_outlined,
                       size: 30,
-                      color: AppTheme.accent,
+                      color: c.accent,
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
+                  Text(
                     'No expenses yet',
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.3,
-                      color: AppTheme.ink,
+                      color: c.ink,
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
+                  Text(
                     'Tap the button below to add\nyour first expense',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: AppTheme.inkSecondary,
+                      color: c.inkSecondary,
                       fontSize: 14,
                       height: 1.5,
                     ),
@@ -127,6 +128,7 @@ class _LoadingListState extends State<_LoadingList>
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
       itemCount: 5,
@@ -142,7 +144,7 @@ class _LoadingListState extends State<_LoadingList>
             child: Container(
               height: 64,
               decoration: BoxDecoration(
-                color: AppTheme.surfaceDim,
+                color: c.surfaceDim,
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
             ),
@@ -167,6 +169,7 @@ class _ExpenseTile extends StatelessWidget {
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
+    final c = AppColors.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -179,7 +182,7 @@ class _ExpenseTile extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: TextButton.styleFrom(foregroundColor: AppTheme.negative),
+            style: TextButton.styleFrom(foregroundColor: c.negative),
             child: const Text('Delete'),
           ),
         ],
@@ -202,13 +205,14 @@ class _ExpenseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     final currency = NumberFormat.currency(symbol: '', decimalDigits: 2);
     final dateFormat = DateFormat('MMM d');
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Material(
-        color: AppTheme.surface,
+        color: c.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         child: InkWell(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -216,7 +220,7 @@ class _ExpenseTile extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              border: Border.all(color: AppTheme.border, width: 1),
+              border: Border.all(color: c.border, width: 1),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
             child: Row(
@@ -250,8 +254,8 @@ class _ExpenseTile extends StatelessWidget {
                         expense.description,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppTheme.ink,
+                        style: TextStyle(
+                          color: c.ink,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                           letterSpacing: -0.2,
@@ -262,8 +266,8 @@ class _ExpenseTile extends StatelessWidget {
                         '${expense.payerName} paid · ${dateFormat.format(expense.date.toLocal())}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppTheme.inkSecondary,
+                        style: TextStyle(
+                          color: c.inkSecondary,
                           fontSize: 12.5,
                         ),
                       ),
@@ -274,12 +278,12 @@ class _ExpenseTile extends StatelessWidget {
                 // ── Amount ──
                 Text(
                   currency.format(expense.amount),
-                  style: const TextStyle(
-                    color: AppTheme.ink,
+                  style: TextStyle(
+                    color: c.ink,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.3,
-                    fontFeatures: [FontFeature.tabularFigures()],
+                    fontFeatures: const [FontFeature.tabularFigures()],
                   ),
                 ),
                 const SizedBox(width: 4),
@@ -287,12 +291,12 @@ class _ExpenseTile extends StatelessWidget {
                 GestureDetector(
                   onTap: () => _confirmDelete(context),
                   behavior: HitTestBehavior.opaque,
-                  child: const Padding(
-                    padding: EdgeInsets.all(4),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
                     child: Icon(
                       Icons.close_rounded,
                       size: 16,
-                      color: AppTheme.inkMuted,
+                      color: c.inkMuted,
                     ),
                   ),
                 ),

@@ -42,6 +42,7 @@ class _EmptyMembers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
@@ -53,30 +54,30 @@ class _EmptyMembers extends StatelessWidget {
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppTheme.surfaceDim,
+                color: c.surfaceDim,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.person_add_outlined,
                 size: 30,
-                color: AppTheme.inkSecondary,
+                color: c.inkSecondary,
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'No members yet',
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
-                color: AppTheme.ink,
+                color: c.ink,
               ),
             ),
             const SizedBox(height: 6),
-            const Text(
+            Text(
               'Add people to start\nsplitting together',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppTheme.inkSecondary,
+                color: c.inkSecondary,
                 fontSize: 14,
                 height: 1.5,
               ),
@@ -94,6 +95,7 @@ class _MemberLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -104,7 +106,7 @@ class _MemberLoading extends StatelessWidget {
         child: Container(
           height: 60,
           decoration: BoxDecoration(
-            color: AppTheme.surfaceDim,
+            color: c.surfaceDim,
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           ),
         ),
@@ -127,6 +129,7 @@ class _MemberTile extends StatelessWidget {
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
+    final c = AppColors.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -139,7 +142,7 @@ class _MemberTile extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: TextButton.styleFrom(foregroundColor: AppTheme.negative),
+            style: TextButton.styleFrom(foregroundColor: c.negative),
             child: const Text('Remove'),
           ),
         ],
@@ -162,13 +165,14 @@ class _MemberTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.surface,
+          color: c.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.border, width: 1),
+          border: Border.all(color: c.border, width: 1),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
@@ -199,8 +203,8 @@ class _MemberTile extends StatelessWidget {
                 member.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: AppTheme.ink,
+                style: TextStyle(
+                  color: c.ink,
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   letterSpacing: -0.2,
@@ -211,12 +215,12 @@ class _MemberTile extends StatelessWidget {
             GestureDetector(
               onTap: () => _confirmDelete(context),
               behavior: HitTestBehavior.opaque,
-              child: const Padding(
-                padding: EdgeInsets.all(4),
+              child: Padding(
+                padding: const EdgeInsets.all(4),
                 child: Icon(
                   Icons.close_rounded,
                   size: 16,
-                  color: AppTheme.inkMuted,
+                  color: c.inkMuted,
                 ),
               ),
             ),

@@ -33,6 +33,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   }
 
   Future<void> _pickDate() async {
+    final c = AppColors.of(context);
     final picked = await showDatePicker(
       context: context,
       initialDate: _date,
@@ -41,8 +42,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
           colorScheme: Theme.of(context).colorScheme.copyWith(
-                primary: AppTheme.accent,
-                onPrimary: AppTheme.background,
+                primary: c.accent,
+                onPrimary: c.background,
               ),
         ),
         child: child!,
@@ -85,6 +86,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     final members = context.watch<ExpenseProvider>().members;
     final dateFormat = DateFormat('MMM d, y');
 
@@ -108,16 +110,16 @@ class _ExpenseFormState extends State<ExpenseForm> {
                     height: 4,
                     margin: const EdgeInsets.only(top: 12, bottom: 20),
                     decoration: BoxDecoration(
-                      color: AppTheme.borderStrong,
+                      color: c.borderStrong,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
                 ),
                 // ── Title ──
-                const Text(
+                Text(
                   'New expense',
                   style: TextStyle(
-                    color: AppTheme.ink,
+                    color: c.ink,
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
@@ -126,10 +128,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 const SizedBox(height: 24),
 
                 // ── Amount (hero input) ──
-                const Text(
+                Text(
                   'AMOUNT',
                   style: TextStyle(
-                    color: AppTheme.inkMuted,
+                    color: c.inkMuted,
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.8,
@@ -138,7 +140,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceDim,
+                    color: c.surfaceDim,
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
                   padding: const EdgeInsets.symmetric(
@@ -152,7 +154,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                       Text(
                         '\u20AC',
                         style: TextStyle(
-                          color: AppTheme.inkMuted,
+                          color: c.inkMuted,
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
                           height: 1.6,
@@ -168,8 +170,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
                           ),
                           autofocus: true,
                           textAlign: TextAlign.left,
-                          style: const TextStyle(
-                            color: AppTheme.ink,
+                          style: TextStyle(
+                            color: c.ink,
                             fontSize: 32,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -1.0,
@@ -177,8 +179,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
                           ),
                           decoration: InputDecoration(
                             hintText: '0.00',
-                            hintStyle: const TextStyle(
-                              color: AppTheme.inkMuted,
+                            hintStyle: TextStyle(
+                              color: c.inkMuted,
                               fontSize: 32,
                               fontWeight: FontWeight.w800,
                               letterSpacing: -1.0,
@@ -210,7 +212,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 TextFormField(
                   controller: _descriptionController,
                   textCapitalization: TextCapitalization.sentences,
-                  style: const TextStyle(color: AppTheme.ink, fontSize: 15),
+                  style: TextStyle(color: c.ink, fontSize: 15),
                   decoration: const InputDecoration(
                     labelText: 'What was it for?',
                     hintText: 'Dinner, groceries, gas\u2026',
@@ -227,9 +229,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 // ── Paid by ──
                 DropdownButtonFormField<int>(
                   initialValue: _payerId,
-                  style: const TextStyle(color: AppTheme.ink, fontSize: 15),
-                  dropdownColor: AppTheme.surface,
-                  iconEnabledColor: AppTheme.inkSecondary,
+                  style: TextStyle(color: c.ink, fontSize: 15),
+                  dropdownColor: c.surface,
+                  iconEnabledColor: c.inkSecondary,
                   decoration: const InputDecoration(
                     labelText: 'Paid by',
                   ),
@@ -254,9 +256,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppTheme.surface,
+                      color: c.surface,
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                      border: Border.all(color: AppTheme.border, width: 1),
+                      border: Border.all(color: c.border, width: 1),
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -264,16 +266,16 @@ class _ExpenseFormState extends State<ExpenseForm> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.calendar_today_rounded,
                           size: 18,
-                          color: AppTheme.inkSecondary,
+                          color: c.inkSecondary,
                         ),
                         const SizedBox(width: 12),
-                        const Text(
+                        Text(
                           'Date',
                           style: TextStyle(
-                            color: AppTheme.inkSecondary,
+                            color: c.inkSecondary,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -281,17 +283,17 @@ class _ExpenseFormState extends State<ExpenseForm> {
                         const Spacer(),
                         Text(
                           dateFormat.format(_date),
-                          style: const TextStyle(
-                            color: AppTheme.ink,
+                          style: TextStyle(
+                            color: c.ink,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(width: 6),
-                        const Icon(
+                        Icon(
                           Icons.chevron_right_rounded,
                           size: 18,
-                          color: AppTheme.inkMuted,
+                          color: c.inkMuted,
                         ),
                       ],
                     ),
@@ -306,26 +308,26 @@ class _ExpenseFormState extends State<ExpenseForm> {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: AppTheme.negative.withValues(alpha: 0.08),
+                      color: c.negative.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       border: Border.all(
-                        color: AppTheme.negative.withValues(alpha: 0.2),
+                        color: c.negative.withValues(alpha: 0.2),
                         width: 1,
                       ),
                     ),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.error_outline_rounded,
                           size: 18,
-                          color: AppTheme.negative,
+                          color: c.negative,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             _submitError!,
-                            style: const TextStyle(
-                              color: AppTheme.negative,
+                            style: TextStyle(
+                              color: c.negative,
                               fontSize: 13,
                             ),
                           ),
@@ -341,7 +343,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 Opacity(
                   opacity: _submitting ? 0.6 : 1.0,
                   child: Material(
-                    color: AppTheme.ink,
+                    color: c.ink,
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -350,18 +352,18 @@ class _ExpenseFormState extends State<ExpenseForm> {
                         height: 52,
                         alignment: Alignment.center,
                         child: _submitting
-                            ? const SizedBox(
+                            ? SizedBox(
                                 height: 20,
                                 width: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: AppTheme.background,
+                                  color: c.background,
                                 ),
                               )
-                            : const Text(
+                            : Text(
                                 'Add expense',
                                 style: TextStyle(
-                                  color: AppTheme.background,
+                                  color: c.background,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -376,7 +378,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                       ? null
                       : () => Navigator.of(context).pop(),
                   style: TextButton.styleFrom(
-                    foregroundColor: AppTheme.inkSecondary,
+                    foregroundColor: c.inkSecondary,
                     minimumSize: const Size.fromHeight(44),
                   ),
                   child: const Text(

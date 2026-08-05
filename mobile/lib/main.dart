@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'config/api_config.dart';
@@ -13,14 +12,6 @@ import 'services/api_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: AppTheme.background,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ),
-  );
   final config = await ApiConfig.load();
   runApp(TabbrApp(config: config));
 }
@@ -57,6 +48,8 @@ class TabbrApp extends StatelessWidget {
         title: 'Tabbr',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme(),
+        darkTheme: AppTheme.darkTheme(),
+        themeMode: ThemeMode.system,
         home: const _Root(),
       ),
     );

@@ -22,11 +22,13 @@ class RoomCodeBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    // The banner is inverted: dark-on-light in light mode, light-on-dark in dark mode.
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 18, 12, 18),
       decoration: BoxDecoration(
-        color: AppTheme.ink,
+        color: c.invertedBg,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       ),
       child: Row(
@@ -38,32 +40,32 @@ class RoomCodeBanner extends StatelessWidget {
                 if (roomName != null && roomName!.isNotEmpty) ...[
                   Text(
                     roomName!,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.background,
+                      color: c.invertedFg,
                     ),
                   ),
                   const SizedBox(height: 6),
                 ] else
                   const SizedBox(height: 2),
-                const Text(
+                Text(
                   'ROOM CODE',
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.4,
-                    color: AppTheme.inkMuted,
+                    color: c.invertedFg.withValues(alpha: 0.5),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   code,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 3,
-                    color: AppTheme.background,
+                    color: c.invertedFg,
                     height: 1.1,
                   ),
                 ),
@@ -72,12 +74,12 @@ class RoomCodeBanner extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.12),
+              color: c.invertedFg.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             ),
             child: IconButton(
               onPressed: () => _copy(context),
-              icon: const Icon(Icons.copy_rounded, color: AppTheme.background),
+              icon: Icon(Icons.copy_rounded, color: c.invertedFg),
               tooltip: 'Copy code',
             ),
           ),

@@ -75,7 +75,8 @@ class _RoomScreenState extends State<RoomScreen>
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(controller.text),
-            style: TextButton.styleFrom(foregroundColor: AppTheme.accent),
+            style: TextButton.styleFrom(
+                foregroundColor: AppColors.of(context).accent),
             child: const Text('Add'),
           ),
         ],
@@ -111,6 +112,7 @@ class _RoomScreenState extends State<RoomScreen>
   }
 
   Future<void> _leaveRoom() async {
+    final c = AppColors.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -123,7 +125,7 @@ class _RoomScreenState extends State<RoomScreen>
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: TextButton.styleFrom(foregroundColor: AppTheme.negative),
+            style: TextButton.styleFrom(foregroundColor: c.negative),
             child: const Text('Leave'),
           ),
         ],
@@ -137,6 +139,7 @@ class _RoomScreenState extends State<RoomScreen>
   }
 
   Future<void> _deleteRoom() async {
+    final c = AppColors.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -151,7 +154,7 @@ class _RoomScreenState extends State<RoomScreen>
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: TextButton.styleFrom(foregroundColor: AppTheme.negative),
+            style: TextButton.styleFrom(foregroundColor: c.negative),
             child: const Text('Delete'),
           ),
         ],
@@ -189,6 +192,7 @@ class _RoomScreenState extends State<RoomScreen>
   @override
   Widget build(BuildContext context) {
     final room = context.watch<RoomProvider>().room;
+    final c = AppColors.of(context);
     if (room == null) {
       return const LandingScreen();
     }
@@ -198,11 +202,11 @@ class _RoomScreenState extends State<RoomScreen>
           (room.name != null && room.name!.isNotEmpty)
               ? room.name!
               : 'tabbr',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w800,
             letterSpacing: -1.0,
-            color: AppTheme.ink,
+            color: c.ink,
           ),
         ),
         actions: [
@@ -218,10 +222,10 @@ class _RoomScreenState extends State<RoomScreen>
                   _deleteRoom();
               }
             },
-            itemBuilder: (_) => const [
+            itemBuilder: (_) => [
               PopupMenuItem<String>(
                 value: 'change_server',
-                child: ListTile(
+                child: const ListTile(
                   leading: Icon(Icons.dns_outlined),
                   title: Text('Change server'),
                   contentPadding: EdgeInsets.zero,
@@ -229,7 +233,7 @@ class _RoomScreenState extends State<RoomScreen>
               ),
               PopupMenuItem<String>(
                 value: 'leave',
-                child: ListTile(
+                child: const ListTile(
                   leading: Icon(Icons.logout_rounded),
                   title: Text('Leave room'),
                   contentPadding: EdgeInsets.zero,
@@ -237,7 +241,7 @@ class _RoomScreenState extends State<RoomScreen>
               ),
               PopupMenuItem<String>(
                 value: 'delete',
-                child: ListTile(
+                child: const ListTile(
                   leading: Icon(Icons.delete_outline_rounded),
                   title: Text('Delete room'),
                   contentPadding: EdgeInsets.zero,
@@ -268,7 +272,7 @@ class _RoomScreenState extends State<RoomScreen>
             Expanded(
               child: RefreshIndicator(
                 onRefresh: _refresh,
-                color: AppTheme.accent,
+                color: c.accent,
                 child: TabBarView(
                   controller: _tabController,
                   children: const [
@@ -327,10 +331,11 @@ class _SegmentedTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppTheme.border, width: 1),
+          bottom: BorderSide(color: c.border, width: 1),
         ),
       ),
       child: Row(
@@ -350,7 +355,7 @@ class _SegmentedTabBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: active ? AppTheme.accent : Colors.transparent,
+                          color: active ? c.accent : Colors.transparent,
                           width: 2.5,
                         ),
                       ),
@@ -362,7 +367,7 @@ class _SegmentedTabBar extends StatelessWidget {
                           fontSize: 14,
                           fontWeight:
                               active ? FontWeight.w700 : FontWeight.w500,
-                          color: active ? AppTheme.ink : AppTheme.inkSecondary,
+                          color: active ? c.ink : c.inkSecondary,
                         ),
                         child: Text(label),
                       ),
@@ -393,8 +398,9 @@ class _InkFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Material(
-      color: AppTheme.ink,
+      color: c.ink,
       borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
@@ -405,12 +411,12 @@ class _InkFab extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: AppTheme.background, size: 20),
+              Icon(icon, color: c.background, size: 20),
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(
-                  color: AppTheme.background,
+                style: TextStyle(
+                  color: c.background,
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
                 ),
@@ -459,34 +465,34 @@ class _SummaryRow extends StatelessWidget {
     required this.balanceCount,
   });
 
-  Widget _stat(String label, int value, IconData icon) {
+  Widget _stat(String label, int value, IconData icon, AppColors c) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppTheme.surface,
+          color: c.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.border, width: 1),
+          border: Border.all(color: c.border, width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: AppTheme.inkSecondary, size: 18),
+            Icon(icon, color: c.inkSecondary, size: 18),
             const SizedBox(height: 12),
             Text(
               '$value',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.5,
-                color: AppTheme.ink,
+                color: c.ink,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               label,
-              style: const TextStyle(
-                color: AppTheme.inkMuted,
+              style: TextStyle(
+                color: c.inkMuted,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
@@ -499,13 +505,14 @@ class _SummaryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Row(
       children: [
-        _stat('Members', memberCount, Icons.group_rounded),
+        _stat('Members', memberCount, Icons.group_rounded, c),
         const SizedBox(width: 10),
-        _stat('Expenses', expenseCount, Icons.receipt_long_rounded),
+        _stat('Expenses', expenseCount, Icons.receipt_long_rounded, c),
         const SizedBox(width: 10),
-        _stat('Owed', balanceCount, Icons.swap_horiz_rounded),
+        _stat('Owed', balanceCount, Icons.swap_horiz_rounded, c),
       ],
     );
   }

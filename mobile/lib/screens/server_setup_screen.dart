@@ -93,6 +93,8 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -113,34 +115,34 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                   width: 72,
                   height: 72,
                   decoration: BoxDecoration(
-                    color: AppTheme.accentSoft,
+                    color: c.accentSoft,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.dns_rounded,
                     size: 34,
-                    color: AppTheme.accent,
+                    color: c.accent,
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'Connect to server',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
-                  color: AppTheme.ink,
+                  color: c.ink,
                 ),
               ),
               const SizedBox(height: 6),
-              const Text(
+              Text(
                 'Enter your Tabbr server URL',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
-                  color: AppTheme.inkSecondary,
+                  color: c.inkSecondary,
                 ),
               ),
               const SizedBox(height: 32),
@@ -148,7 +150,7 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                 controller: _controller,
                 keyboardType: TextInputType.url,
                 autocorrect: false,
-                style: const TextStyle(color: AppTheme.ink, fontSize: 15),
+                style: TextStyle(color: c.ink, fontSize: 15),
                 decoration: const InputDecoration(
                   labelText: 'Server URL',
                   hintText: 'http://localhost:8000',
@@ -165,9 +167,7 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                               _statusOk
                                   ? Icons.check_circle_rounded
                                   : Icons.error_outline_rounded,
-                              color: _statusOk
-                                  ? AppTheme.positive
-                                  : AppTheme.negative,
+                              color: _statusOk ? c.positive : c.negative,
                               size: 20,
                             ),
                             const SizedBox(width: 10),
@@ -175,9 +175,7 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                               child: Text(
                                 _status!,
                                 style: TextStyle(
-                                  color: _statusOk
-                                      ? AppTheme.positive
-                                      : AppTheme.negative,
+                                  color: _statusOk ? c.positive : c.negative,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -193,7 +191,7 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
               Opacity(
                 opacity: _saving || _testing ? 0.6 : 1.0,
                 child: Material(
-                  color: AppTheme.ink,
+                  color: c.ink,
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -202,18 +200,18 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                       height: 52,
                       alignment: Alignment.center,
                       child: _saving
-                          ? const SizedBox(
+                          ? SizedBox(
                               height: 20,
                               width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: AppTheme.background,
+                                color: c.background,
                               ),
                             )
-                          : const Text(
+                          : Text(
                               'Save and continue',
                               style: TextStyle(
-                                color: AppTheme.background,
+                                color: c.background,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 15,
                               ),
