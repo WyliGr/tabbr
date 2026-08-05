@@ -16,31 +16,33 @@ class BalanceCard extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (provider.balance.entries.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.savings_rounded,
-                    size: 56,
-                    color: Colors.white24,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'All settled up',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'No outstanding balances',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white60),
-                  ),
-                ],
+          return ListView(
+            children: [
+              const SizedBox(height: 120),
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.savings_rounded,
+                      size: 56,
+                      color: Colors.white24,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'All settled up',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'No outstanding balances',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white60),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           );
         }
         return ListView.separated(

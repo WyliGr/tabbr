@@ -15,31 +15,26 @@ class MemberList extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (provider.members.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.group_add_rounded,
-                    size: 56,
-                    color: Colors.white24,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No members yet',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Add people to start splitting expenses',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white60),
-                  ),
-                ],
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.group_add_rounded,
+                size: 56,
+                color: Colors.white24,
               ),
-            ),
+              const SizedBox(height: 16),
+              Text(
+                'No members yet',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Add people to start splitting expenses',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white60),
+              ),
+            ],
           );
         }
         return ListView.separated(

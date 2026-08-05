@@ -18,15 +18,26 @@ class RoomScreen extends StatefulWidget {
   State<RoomScreen> createState() => _RoomScreenState();
 }
 
-class _RoomScreenState extends State<RoomScreen> {
-  int _tabIndex = 0;
+class _RoomScreenState extends State<RoomScreen>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) setState(() {});
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -34,6 +45,10 @@ class _RoomScreenState extends State<RoomScreen> {
     final expenseProvider = context.read<ExpenseProvider>();
     expenseProvider.setRoom(room);
     await expenseProvider.refresh();
+    // Auto-switch to Members tab if the room has no members yet.
+    if (mounted && expenseProvider.members.isEmpty) {
+      _tabController.index = 2;
+    }
   }
 
   Future<void> _refresh() async {
@@ -84,6 +99,8 @@ class _RoomScreenState extends State<RoomScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Add at least one member first')),
       );
+      // Switch to Members tab so the user can add one.
+      _tabController.index = 2;
       return;
     }
     showModalBottomSheet<void>(
@@ -232,7 +249,7 @@ class _RoomScreenState extends State<RoomScreen> {
               ),
             ),
             TabBar(
-              onTap: (i) => setState(() => _tabIndex = i),
+              controller: _tabController,
               tabs: const [
                 Tab(text: 'Expenses'),
                 Tab(text: 'Balance'),
@@ -242,8 +259,8 @@ class _RoomScreenState extends State<RoomScreen> {
             Expanded(
               child: RefreshIndicator(
                 onRefresh: _refresh,
-                child: IndexedStack(
-                  index: _tabIndex,
+                child: TabBarView(
+                  controller: _tabController,
                   children: const [
                     ExpenseList(),
                     BalanceCard(),
@@ -255,13 +272,13 @@ class _RoomScreenState extends State<RoomScreen> {
           ],
         ),
       ),
-      floatingActionButton: _tabIndex == 0
+      floatingActionButton: _tabController.index == 0
           ? FloatingActionButton.extended(
               onPressed: _openAddExpenseSheet,
               icon: const Icon(Icons.add_rounded),
               label: const Text('Expense'),
             )
-          : _tabIndex == 2
+          : _tabController.index == 2
               ? FloatingActionButton.extended(
                   onPressed: _addMember,
                   icon: const Icon(Icons.person_add_alt_1_rounded),

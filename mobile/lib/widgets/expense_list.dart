@@ -16,31 +16,33 @@ class ExpenseList extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (provider.expenses.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.receipt_long_rounded,
-                    size: 56,
-                    color: Colors.white24,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No expenses yet',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Tap the + button to add one',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white60),
-                  ),
-                ],
+          return ListView(
+            children: [
+              const SizedBox(height: 120),
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.receipt_long_rounded,
+                      size: 56,
+                      color: Colors.white24,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'No expenses yet',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Tap the + button to add one',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white60),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           );
         }
         return ListView.separated(
