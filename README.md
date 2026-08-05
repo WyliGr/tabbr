@@ -13,15 +13,28 @@ Simple expense sharing webapp — a lightweight Tricount clone.
 - **Database**: PostgreSQL
 - **Deploy**: Docker Compose
 
-## Quick Start (Docker)
+## Deploy
+
+### Docker Compose (local)
 
 ```bash
 cp .env.example .env
-docker compose up --build
+# edit .env to change default credentials
+docker compose up --build -d
 ```
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000/docs
+### Portainer (stack from Git repo)
+
+The `stack.env` file in the repo provides default values for all environment variables. Portainer reads it automatically when deploying via Repository.
+
+In Portainer → Stacks → Add stack → Repository:
+1. Set the Git repo URL
+2. Set the compose path to `docker-compose.yml`
+3. Optionally override environment variables in the Portainer UI:
+   - `POSTGRES_DB` (default: tricount)
+   - `POSTGRES_USER` (default: tricount)
+   - `POSTGRES_PASSWORD` (default: tricount — change this!)
+   - `PORT` (default: 3000)
 
 ## Development
 
