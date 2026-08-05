@@ -254,7 +254,13 @@ async def create_expense(payload: ExpenseCreate) -> ExpenseOut:
                 )
 
         await session.commit()
-        await session.refresh(expense, attribute_names=["splits"])
+        # Re-query with selectinload to avoid async lazy-load greenlet error
+        result = await session.execute(
+            select(Expense)
+            .options(selectinload(Expense.splits))
+            .where(Expense.id == expense.id)
+        )
+        expense = result.scalars().first()
         return _serialize_expense(expense, payer.name)
 
 
