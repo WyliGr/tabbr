@@ -486,7 +486,15 @@ async def delete_expense(expense_id: int) -> dict:
         expense = await session.get(LegacyExpense, expense_id)
         if expense is None:
             raise HTTPException(status_code=404, detail="Expense not found")
-        await session.execute(delete(LegacyExpense).where(LegacyExpense.id == expense_id))
+        # Delete child splits first to avoid FK constraint violations
+        await session.execute(
+            delete(LegacyExpenseSplit).where(
+                LegacyExpenseSplit.expense_id == expense_id
+            )
+        )
+        await session.execute(
+            delete(LegacyExpense).where(LegacyExpense.id == expense_id)
+        )
         await session.commit()
         return {"ok": True}
 
@@ -636,6 +644,15 @@ async def delete_room_member(code: str, member_id: int) -> dict:
         member = await session.get(RoomMember, member_id)
         if member is None or member.room_id != room.id:
             raise HTTPException(status_code=404, detail="Member not found")
+        # Delete child rows first to avoid FK constraint violations.
+        # RoomMember is referenced by ExpenseSplit.member_id and
+        # Expense.payer_id; bulk DELETE bypasses ORM cascades.
+        await session.execute(
+            delete(ExpenseSplit).where(ExpenseSplit.member_id == member_id)
+        )
+        await session.execute(
+            delete(Expense).where(Expense.payer_id == member_id)
+        )
         await session.execute(
             delete(RoomMember).where(RoomMember.id == member_id)
         )
@@ -740,6 +757,10 @@ async def delete_room_expense(code: str, expense_id: int) -> dict:
         expense = await session.get(Expense, expense_id)
         if expense is None or expense.room_id != room.id:
             raise HTTPException(status_code=404, detail="Expense not found")
+        # Delete child splits first to avoid FK constraint violations
+        await session.execute(
+            delete(ExpenseSplit).where(ExpenseSplit.expense_id == expense_id)
+        )
         await session.execute(delete(Expense).where(Expense.id == expense_id))
         await session.commit()
         return {"ok": True}
