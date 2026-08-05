@@ -83,8 +83,11 @@ class ApiService {
       final response = await _dio.get<dynamic>('/rooms/AAAAA');
       return response.statusCode == 404 || response.statusCode == 200;
     } on DioException catch (e) {
+      // Only a 404 (room not found) or 200 means the API is alive.
+      // A 502/503/500 means the server is behind a proxy but the backend is down.
       if (e.response != null) {
-        return true;
+        final code = e.response!.statusCode;
+        return code == 404 || code == 200;
       }
       return false;
     } catch (_) {
