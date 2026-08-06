@@ -11,6 +11,7 @@ import '../widgets/member_list.dart';
 import '../widgets/room_code_banner.dart';
 import 'landing_screen.dart';
 import 'server_setup_screen.dart';
+import 'settings_screen.dart';
 
 class RoomScreen extends StatefulWidget {
   const RoomScreen({super.key});
@@ -189,6 +190,14 @@ class _RoomScreenState extends State<RoomScreen>
     }
   }
 
+  Future<void> _openSettings() async {
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => const SettingsScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final room = context.watch<RoomProvider>().room;
@@ -214,6 +223,8 @@ class _RoomScreenState extends State<RoomScreen>
             icon: const Icon(Icons.more_horiz_rounded),
             onSelected: (value) {
               switch (value) {
+                case 'settings':
+                  _openSettings();
                 case 'change_server':
                   _changeServer();
                 case 'leave':
@@ -223,6 +234,14 @@ class _RoomScreenState extends State<RoomScreen>
               }
             },
             itemBuilder: (_) => [
+              PopupMenuItem<String>(
+                value: 'settings',
+                child: const ListTile(
+                  leading: Icon(Icons.settings_rounded),
+                  title: Text('Settings'),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
               PopupMenuItem<String>(
                 value: 'change_server',
                 child: const ListTile(

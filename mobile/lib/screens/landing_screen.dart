@@ -6,7 +6,7 @@ import '../config/api_config.dart';
 import '../config/theme.dart';
 import '../providers/room_provider.dart';
 import 'room_screen.dart';
-import 'server_setup_screen.dart';
+import 'settings_screen.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -117,17 +117,12 @@ class _LandingScreenState extends State<LandingScreen>
     }
   }
 
-  Future<void> _changeServer() async {
-    final changed = await Navigator.of(context).push<bool>(
+  Future<void> _openSettings() async {
+    await Navigator.of(context).push<bool>(
       MaterialPageRoute<bool>(
-        builder: (_) => const ServerSetupScreen(),
+        builder: (_) => const SettingsScreen(),
       ),
     );
-    if (changed == true && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Server updated')),
-      );
-    }
   }
 
   @override
@@ -145,8 +140,8 @@ class _LandingScreenState extends State<LandingScreen>
               right: 0,
               child: IconButton(
                 icon: const Icon(Icons.tune_rounded),
-                tooltip: 'Server settings',
-                onPressed: _changeServer,
+                tooltip: 'Settings',
+                onPressed: _openSettings,
               ),
             ),
             SingleChildScrollView(
