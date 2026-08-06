@@ -135,15 +135,6 @@ class _LandingScreenState extends State<LandingScreen>
       body: SafeArea(
         child: Stack(
           children: [
-            Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                icon: const Icon(Icons.tune_rounded),
-                tooltip: 'Settings',
-                onPressed: _openSettings,
-              ),
-            ),
             SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 28),
               child: ConstrainedBox(
@@ -283,6 +274,16 @@ class _LandingScreenState extends State<LandingScreen>
                     const SizedBox(height: 48),
                   ],
                 ),
+              ),
+            ),
+            // ── Settings button (on top of ScrollView so it's tappable) ──
+            Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton(
+                icon: const Icon(Icons.tune_rounded),
+                tooltip: 'Settings',
+                onPressed: _openSettings,
               ),
             ),
           ],

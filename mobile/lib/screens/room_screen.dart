@@ -225,12 +225,16 @@ class _RoomScreenState extends State<RoomScreen>
               switch (value) {
                 case 'settings':
                   _openSettings();
+                  break;
                 case 'change_server':
                   _changeServer();
+                  break;
                 case 'leave':
                   _leaveRoom();
+                  break;
                 case 'delete':
                   _deleteRoom();
+                  break;
               }
             },
             itemBuilder: (_) => [
