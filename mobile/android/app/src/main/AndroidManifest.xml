@@ -3,7 +3,8 @@
     <application
         android:label="Tabbr"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:appCategory="productivity">
         <activity
             android:name=".MainActivity"
             android:exported="true"
