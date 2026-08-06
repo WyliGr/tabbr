@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'config/api_config.dart';
-import 'config/theme.dart';
+import 'config/theme_provider.dart';
 import 'providers/expense_provider.dart';
 import 'providers/room_provider.dart';
 import 'screens/landing_screen.dart';
@@ -13,19 +13,26 @@ import 'services/api_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final config = await ApiConfig.load();
-  runApp(TabbrApp(config: config));
+  final themeProvider = await ThemeProvider.load();
+  runApp(TabbrApp(config: config, themeProvider: themeProvider));
 }
 
 class TabbrApp extends StatelessWidget {
   final ApiConfig config;
+  final ThemeProvider themeProvider;
 
-  const TabbrApp({super.key, required this.config});
+  const TabbrApp({
+    super.key,
+    required this.config,
+    required this.themeProvider,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<ApiConfig>.value(value: config),
+        ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider),
         ProxyProvider<ApiConfig, ApiService>(
           update: (_, apiConfig, _) => ApiService(apiConfig),
         ),
@@ -44,13 +51,17 @@ class TabbrApp extends StatelessWidget {
               previous ?? ExpenseProvider(api: api),
         ),
       ],
-      child: MaterialApp(
-        title: 'Tabbr',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme(),
-        darkTheme: AppTheme.darkTheme(),
-        themeMode: ThemeMode.system,
-        home: const _Root(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProv, _) {
+          return MaterialApp(
+            title: 'Tabbr',
+            debugShowCheckedModeBanner: false,
+            theme: themeProv.theme,
+            darkTheme: themeProv.theme,
+            themeMode: ThemeMode.dark,
+            home: const _Root(),
+          );
+        },
       ),
     );
   }

@@ -1,53 +1,55 @@
 import 'package:flutter/material.dart';
 
 /// ─────────────────────────────────────────────────────────────
-///  Tabbr — "Paper & Ink" design system
+///  Tabbr — Nothing OS design system
 ///
-///  A warm, editorial aesthetic. Think of a well-designed receipt
-///  or ledger: cream paper (light) / warm charcoal (dark), ink text,
-///  a single bold coral accent for money, forest green for settled
-///  states. No gradients. No glassmorphism. Just clear, confident,
+///  A pure dark aesthetic inspired by Nothing's industrial design
+///  language. Pure black background, hairline borders, monospace
+///  numerics, and a single user-customizable accent color. No
+///  gradients, no glassmorphism. Just confident, minimal,
 ///  typographic hierarchy with architectural radii.
 ///
-///  Both light and dark themes share the same DNA — same radii, same
-///  typography, same border-first surfaces, same coral accent. The dark
-///  palette is a warm near-black (not cold blue-black), with off-white
-///  ink and subtly brightened coral/green for contrast.
+///  Dark-only: the app no longer has a light theme.
 /// ─────────────────────────────────────────────────────────────
 
-/// ThemeExtension carrying the semantic palette for the current
-/// brightness.  Use [AppColors.of] to get the instance from any
-/// build context.
+/// ThemeExtension carrying the semantic palette.  The accent color
+/// is dynamic — it is supplied at construction time so the user can
+/// customize it at runtime via [ThemeProvider].
+///
+/// Use [AppColors.of] to get the instance from any build context.
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
-  /// Page background — warm cream (light) / warm charcoal (dark).
+  /// Page background — pure black.
   final Color background;
 
-  /// Card / surface fill — white (light) / dark grey (dark).
+  /// Card / surface fill — near-black elevated.
   final Color surface;
 
-  /// Dimmed surface (amount input, loading shimmers) — surfaceDim.
+  /// Dimmed surface (amount input, loading shimmers) — slightly raised.
   final Color surfaceDim;
 
-  /// Primary accent — coral. Slightly brighter in dark mode.
+  /// Primary accent — user-customizable (default Nothing red).
   final Color accent;
 
-  /// Soft accent tint for icon backgrounds.
+  /// Slightly lighter version of accent for hover/pressed states.
+  final Color accentHover;
+
+  /// Soft accent tint (8% opacity) for icon backgrounds.
   final Color accentSoft;
 
-  /// Positive / settled state — forest green. Brightened in dark.
+  /// Positive / settled state — green.
   final Color positive;
 
   /// Soft positive tint for icon backgrounds.
   final Color positiveSoft;
 
-  /// Primary text — ink black (light) / warm off-white (dark).
+  /// Primary text — pure white.
   final Color ink;
 
   /// Secondary text — mid grey.
   final Color inkSecondary;
 
-  /// Muted text / captions — light grey.
+  /// Muted text / captions — dark grey.
   final Color inkMuted;
 
   /// Hairline border between cards/inputs.
@@ -59,20 +61,12 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Error / destructive — red.
   final Color negative;
 
-  /// Background used on inverted surfaces (room code banner in light
-  /// mode, or the "inverted" button in dark mode).  On light, the
-  /// banner is dark-on-light so this is ink; on dark, the banner
-  /// flips to light-on-dark so this is the off-white.
-  final Color invertedBg;
-
-  /// Text/foreground on the inverted surface.
-  final Color invertedFg;
-
   const AppColors({
     required this.background,
     required this.surface,
     required this.surfaceDim,
     required this.accent,
+    required this.accentHover,
     required this.accentSoft,
     required this.positive,
     required this.positiveSoft,
@@ -82,55 +76,39 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.border,
     required this.borderStrong,
     required this.negative,
-    required this.invertedBg,
-    required this.invertedFg,
   });
 
-  /// Light-mode palette — "Paper & Ink" warm cream.
-  static const AppColors light = AppColors(
-    background: Color(0xFFF6F3EE),
-    surface: Color(0xFFFFFFFF),
-    surfaceDim: Color(0xFFF0EDE6),
-    accent: Color(0xFFE8553D),
-    accentSoft: Color(0xFFFDE8E2),
-    positive: Color(0xFF2D7D5E),
-    positiveSoft: Color(0xFFDDF0E6),
-    ink: Color(0xFF1A1A1A),
-    inkSecondary: Color(0xFF6B6B6B),
-    inkMuted: Color(0xFFA0A0A0),
-    border: Color(0xFFE5E0D8),
-    borderStrong: Color(0xFFD0C9BD),
-    negative: Color(0xFFC93838),
-    invertedBg: Color(0xFF1A1A1A),
-    invertedFg: Color(0xFFF6F3EE),
-  );
-
-  /// Dark-mode palette — "Paper & Ink" at night.
+  /// Build an [AppColors] instance with the given accent color.
   ///
-  /// A warm near-black background with a faint brown undertone (not
-  /// cold blue-black), dark stone cards with subtle warm borders,
-  /// slightly brightened coral and green for contrast against the
-  /// dark surface, and warm off-white ink instead of pure white.
-  static const AppColors dark = AppColors(
-    background: Color(0xFF1C1A17), // warm charcoal, slight brown
-    surface: Color(0xFF272420), // dark warm stone
-    surfaceDim: Color(0xFF322E29), // slightly raised for amount box
-    accent: Color(0xFFEC6347), // coral, lifted ~5% lightness
-    accentSoft: Color(0xFF3A241F), // dim coral-tinted dark
-    positive: Color(0xFF4DA67E), // forest green, brightened
-    positiveSoft: Color(0xFF1E3329), // dim green-tinted dark
-    ink: Color(0xFFF0EDE7), // warm off-white
-    inkSecondary: Color(0xFFAEAB9F), // warm grey
-    inkMuted: Color(0xFF7A7670), // muted warm grey
-    border: Color(0xFF38332E), // subtle warm hairline
-    borderStrong: Color(0xFF4A433C), // stronger warm hairline
-    negative: Color(0xFFE0584F), // red, brightened for dark
-    invertedBg: Color(0xFFF0EDE7), // banner flips: light bg in dark mode
-    invertedFg: Color(0xFF1C1A17), // dark text on light banner
-  );
+  /// All non-accent colors use the fixed Nothing OS dark palette.
+  /// [accentHex] is an ARGB int (e.g. `0xFFFF2D2D`).
+  factory AppColors.withAccent(int accentHex) {
+    final accent = Color(accentHex);
+    return AppColors(
+      background: const Color(0xFF000000),
+      surface: const Color(0xFF0A0A0A),
+      surfaceDim: const Color(0xFF111111),
+      accent: accent,
+      accentHover: _lighten(accent, 0.12),
+      accentSoft: accent.withValues(alpha: 0.08),
+      positive: const Color(0xFF4ADE80),
+      positiveSoft: const Color(0xFF4ADE80).withValues(alpha: 0.08),
+      ink: const Color(0xFFFFFFFF),
+      inkSecondary: const Color(0xFF888888),
+      inkMuted: const Color(0xFF555555),
+      border: const Color(0xFF1A1A1A),
+      borderStrong: const Color(0xFF2A2A2A),
+      negative: const Color(0xFFFF4444),
+    );
+  }
 
-  /// Convenience accessor — never null because both themes register
-  /// the extension.
+  /// Lighten a color by mixing it with white by [amount] (0.0–1.0).
+  static Color _lighten(Color c, double amount) {
+    return Color.lerp(c, Colors.white, amount)!;
+  }
+
+  /// Convenience accessor — never null because the theme always
+  /// registers the extension.
   static AppColors of(BuildContext context) =>
       Theme.of(context).extension<AppColors>()!;
 
@@ -140,6 +118,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? surface,
     Color? surfaceDim,
     Color? accent,
+    Color? accentHover,
     Color? accentSoft,
     Color? positive,
     Color? positiveSoft,
@@ -149,14 +128,13 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? border,
     Color? borderStrong,
     Color? negative,
-    Color? invertedBg,
-    Color? invertedFg,
   }) {
     return AppColors(
       background: background ?? this.background,
       surface: surface ?? this.surface,
       surfaceDim: surfaceDim ?? this.surfaceDim,
       accent: accent ?? this.accent,
+      accentHover: accentHover ?? this.accentHover,
       accentSoft: accentSoft ?? this.accentSoft,
       positive: positive ?? this.positive,
       positiveSoft: positiveSoft ?? this.positiveSoft,
@@ -166,8 +144,6 @@ class AppColors extends ThemeExtension<AppColors> {
       border: border ?? this.border,
       borderStrong: borderStrong ?? this.borderStrong,
       negative: negative ?? this.negative,
-      invertedBg: invertedBg ?? this.invertedBg,
-      invertedFg: invertedFg ?? this.invertedFg,
     );
   }
 
@@ -179,6 +155,7 @@ class AppColors extends ThemeExtension<AppColors> {
       surface: Color.lerp(surface, other.surface, t)!,
       surfaceDim: Color.lerp(surfaceDim, other.surfaceDim, t)!,
       accent: Color.lerp(accent, other.accent, t)!,
+      accentHover: Color.lerp(accentHover, other.accentHover, t)!,
       accentSoft: Color.lerp(accentSoft, other.accentSoft, t)!,
       positive: Color.lerp(positive, other.positive, t)!,
       positiveSoft: Color.lerp(positiveSoft, other.positiveSoft, t)!,
@@ -188,46 +165,65 @@ class AppColors extends ThemeExtension<AppColors> {
       border: Color.lerp(border, other.border, t)!,
       borderStrong: Color.lerp(borderStrong, other.borderStrong, t)!,
       negative: Color.lerp(negative, other.negative, t)!,
-      invertedBg: Color.lerp(invertedBg, other.invertedBg, t)!,
-      invertedFg: Color.lerp(invertedFg, other.invertedFg, t)!,
     );
   }
 }
 
 class AppTheme {
-  // ── Avatar palette (warm, muted, curated) ────────────────────
-  // Same in light and dark — these are saturated brand colours
-  // that read well against both warm cream and warm charcoal.
+  // ── Avatar palette (muted, curated for dark UI) ─────────────
   static const List<Color> avatarColors = [
-    Color(0xFFE8553D), // coral
-    Color(0xFF2D7D5E), // forest
-    Color(0xFF4A6FA5), // steel blue
-    Color(0xFFD49A3F), // amber
-    Color(0xFF7B5EA7), // muted purple
-    Color(0xFFC2606B), // dusty rose
-    Color(0xFF3D8B8B), // teal
+    Color(0xFFFF2D2D), // red
+    Color(0xFF3B82F6), // blue
+    Color(0xFF4ADE80), // green
+    Color(0xFFF59E0B), // amber
+    Color(0xFFA855F7), // purple
+    Color(0xFFEC4899), // pink
+    Color(0xFF06B6D4), // cyan
     Color(0xFF8B6F47), // warm brown
   ];
 
   static Color avatarColor(int id) =>
       avatarColors[id.abs() % avatarColors.length];
 
-  // ── Shape (identical in both themes) ────────────────────────
+  // ── Shape ────────────────────────────────────────────────────
   static const double radiusSm = 8;
   static const double radiusMd = 12;
   static const double radiusLg = 16;
 
-  // ── Light theme ──────────────────────────────────────────────
-  static ThemeData lightTheme() => _buildTheme(
-        AppColors.light,
-        Brightness.light,
-      );
+  // ── Preset accent colors ────────────────────────────────────
+  static const List<int> accentPresets = [
+    0xFFFF2D2D, // Nothing Red — default
+    0xFF3B82F6, // Blue
+    0xFF4ADE80, // Green
+    0xFFF59E0B, // Amber
+    0xFFA855F7, // Purple
+    0xFFEC4899, // Pink
+    0xFF06B6D4, // Cyan
+    0xFFFFFFFF, // Pure White
+  ];
 
-  // ── Dark theme ───────────────────────────────────────────────
-  static ThemeData darkTheme() => _buildTheme(
-        AppColors.dark,
-        Brightness.dark,
-      );
+  static const List<String> accentPresetNames = [
+    'Nothing Red',
+    'Blue',
+    'Green',
+    'Amber',
+    'Purple',
+    'Pink',
+    'Cyan',
+    'Pure White',
+  ];
+
+  /// Default accent color (Nothing Red).
+  static const int defaultAccent = 0xFFFF2D2D;
+
+  // ── Dark theme (the only theme) ──────────────────────────────
+  /// Builds the dark theme with the given accent color hex value.
+  static ThemeData darkTheme({int accentHex = defaultAccent}) =>
+      _buildTheme(AppColors.withAccent(accentHex), Brightness.dark);
+
+  /// Light theme — returns the same dark theme (app is dark-only).
+  static ThemeData lightTheme({int accentHex = defaultAccent}) =>
+      _buildTheme(AppColors.withAccent(accentHex), Brightness.dark);
 
   static ThemeData _buildTheme(AppColors c, Brightness brightness) {
     final colorScheme = ColorScheme.fromSeed(
@@ -273,7 +269,7 @@ class AppTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: c.ink,
+          backgroundColor: c.accent,
           foregroundColor: c.background,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radiusMd),
@@ -319,7 +315,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
-          borderSide: BorderSide(color: c.ink, width: 1.5),
+          borderSide: BorderSide(color: c.accent, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
@@ -348,7 +344,7 @@ class AppTheme {
             const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: c.ink,
+        backgroundColor: c.accent,
         foregroundColor: c.background,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusLg),
@@ -356,10 +352,11 @@ class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: c.ink,
-        contentTextStyle: TextStyle(color: c.background, fontSize: 14),
+        backgroundColor: c.surface,
+        contentTextStyle: TextStyle(color: c.ink, fontSize: 14),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusMd),
+          side: BorderSide(color: c.border, width: 1),
         ),
       ),
       dividerTheme: DividerThemeData(
@@ -379,6 +376,7 @@ class AppTheme {
         backgroundColor: c.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusLg),
+          side: BorderSide(color: c.border, width: 1),
         ),
         titleTextStyle: TextStyle(
           fontSize: 18,

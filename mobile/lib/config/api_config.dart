@@ -3,7 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiConfig {
   static const String _kServerUrlKey = 'server_url';
   static const String _kCurrentRoomKey = 'current_room_code';
+  static const String _kAccentColorKey = 'accent_color';
   static const String defaultServerUrl = 'http://localhost:8000';
+
+  /// Default accent color stored as a hex string without the leading '#'
+  /// or '0x' (e.g. "FF2D2D"). Matches [AppTheme.defaultAccent].
+  static const String defaultAccentHex = 'FF2D2D';
 
   String _serverUrl;
   String? _currentRoomCode;
@@ -37,5 +42,18 @@ class ApiConfig {
     } else {
       await prefs.setString(_kCurrentRoomKey, code);
     }
+  }
+
+  /// Load the saved accent color hex string (e.g. "FF2D2D").
+  /// Returns [defaultAccentHex] if none is saved.
+  static Future<String> loadAccentColor() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_kAccentColorKey) ?? defaultAccentHex;
+  }
+
+  /// Persist the accent color hex string (without leading '#' or '0x').
+  static Future<void> saveAccentColor(String hex) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kAccentColorKey, hex);
   }
 }

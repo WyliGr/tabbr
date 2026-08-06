@@ -23,13 +23,14 @@ class RoomCodeBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    // The banner is inverted: dark-on-light in light mode, light-on-dark in dark mode.
+    // Dark-only: the banner uses surface color with a hairline border.
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 18, 12, 18),
       decoration: BoxDecoration(
-        color: c.invertedBg,
+        color: c.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        border: Border.all(color: c.border, width: 1),
       ),
       child: Row(
         children: [
@@ -43,7 +44,7 @@ class RoomCodeBanner extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: c.invertedFg,
+                      color: c.ink,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -55,7 +56,7 @@ class RoomCodeBanner extends StatelessWidget {
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.4,
-                    color: c.invertedFg.withValues(alpha: 0.5),
+                    color: c.inkMuted,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -65,7 +66,7 @@ class RoomCodeBanner extends StatelessWidget {
                     fontSize: 32,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 3,
-                    color: c.invertedFg,
+                    color: c.ink,
                     height: 1.1,
                   ),
                 ),
@@ -74,12 +75,12 @@ class RoomCodeBanner extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              color: c.invertedFg.withValues(alpha: 0.12),
+              color: c.surfaceDim,
               borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             ),
             child: IconButton(
               onPressed: () => _copy(context),
-              icon: Icon(Icons.copy_rounded, color: c.invertedFg),
+              icon: Icon(Icons.copy_rounded, color: c.inkSecondary),
               tooltip: 'Copy code',
             ),
           ),
