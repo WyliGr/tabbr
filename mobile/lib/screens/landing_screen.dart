@@ -136,7 +136,7 @@ class _LandingScreenState extends State<LandingScreen>
         child: Stack(
           children: [
             SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: MediaQuery.of(context).size.height -
@@ -146,14 +146,14 @@ class _LandingScreenState extends State<LandingScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 72),
+                    const SizedBox(height: 60),
                     // ── Wordmark ──
                     Center(
                       child: Text(
                         'tabbr',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 52,
+                          fontSize: 48,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -2.5,
                           color: c.ink,
@@ -161,17 +161,17 @@ class _LandingScreenState extends State<LandingScreen>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
-                      'split expenses,\nkeep it simple',
+                      'split expenses, keep it simple',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 14,
                         height: 1.5,
                         color: c.inkSecondary,
                       ),
                     ),
-                    const SizedBox(height: 64),
+                    const SizedBox(height: 48),
                     // ── Create a room ──
                     _ActionCard(
                       label: 'Create a room',
@@ -196,7 +196,7 @@ class _LandingScreenState extends State<LandingScreen>
                                       hintText: 'Trip to Lisbon',
                                     ),
                                   ),
-                                  const SizedBox(height: 12),
+                                  const SizedBox(height: 10),
                                   _PrimaryButton(
                                     label: 'Create room',
                                     loading: loading,
@@ -220,7 +220,7 @@ class _LandingScreenState extends State<LandingScreen>
                               ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     // ── Join with code ──
                     _ActionCard(
                       label: 'Join with code',
@@ -240,8 +240,8 @@ class _LandingScreenState extends State<LandingScreen>
                                     RegExp(r'[A-Za-z0-9]')),
                                 LengthLimitingTextInputFormatter(8),
                               ],
-                              style: TextStyle(
-                                fontSize: 17,
+                              style: AppTheme.mono(
+                                fontSize: 16,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: 1.5,
                                 color: c.ink,
@@ -253,14 +253,14 @@ class _LandingScreenState extends State<LandingScreen>
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 10),
                           SizedBox(
-                            height: 52,
+                            height: 48,
                             child: OutlinedButton(
                               onPressed: loading ? null : _joinRoom,
                               style: OutlinedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 22),
+                                    horizontal: 20),
                                 backgroundColor: c.ink,
                                 foregroundColor: c.background,
                                 side: BorderSide.none,
@@ -271,7 +271,7 @@ class _LandingScreenState extends State<LandingScreen>
                         ],
                       ),
                     ),
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -315,7 +315,7 @@ class _ActionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     return Container(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: c.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
@@ -327,15 +327,15 @@ class _ActionCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 38,
-                height: 38,
+                width: 34,
+                height: 34,
                 decoration: BoxDecoration(
                   color: accentBg,
                   borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
-                child: Icon(icon, color: accent, size: 20),
+                child: Icon(icon, color: accent, size: 18),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,17 +343,17 @@ class _ActionCard extends StatelessWidget {
                     Text(
                       label,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: c.ink,
                         letterSpacing: -0.2,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 1),
                     Text(
                       subtext,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 12,
                         color: c.inkSecondary,
                       ),
                     ),
@@ -362,7 +362,7 @@ class _ActionCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 14),
           child,
         ],
       ),
@@ -396,7 +396,7 @@ class _PrimaryButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           onTap: loading ? null : onPressed,
           child: Container(
-            height: 52,
+            height: 48,
             alignment: Alignment.center,
             child: loading
                 ? SizedBox(
@@ -411,7 +411,7 @@ class _PrimaryButton extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (icon != null) ...[
-                        Icon(icon, color: c.background, size: 20),
+                        Icon(icon, color: c.background, size: 18),
                         const SizedBox(width: 8),
                       ],
                       Text(
@@ -419,7 +419,7 @@ class _PrimaryButton extends StatelessWidget {
                         style: TextStyle(
                           color: c.background,
                           fontWeight: FontWeight.w700,
-                          fontSize: 15,
+                          fontSize: 14,
                         ),
                       ),
                     ],

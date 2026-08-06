@@ -212,7 +212,7 @@ class _RoomScreenState extends State<RoomScreen>
               ? room.name!
               : 'tabbr',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 19,
             fontWeight: FontWeight.w800,
             letterSpacing: -1.0,
             color: c.ink,
@@ -278,7 +278,7 @@ class _RoomScreenState extends State<RoomScreen>
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+              padding: const EdgeInsets.fromLTRB(16, 2, 16, 0),
               child: RoomCodeBanner(
                 code: room.code,
                 roomName: room.name,
@@ -286,7 +286,7 @@ class _RoomScreenState extends State<RoomScreen>
             ),
             // ── Tab bar ──
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
               child: _SegmentedTabBar(
                 controller: _tabController,
                 tabs: const ['Expenses', 'Balance', 'Members'],
@@ -327,17 +327,15 @@ class _RoomScreenState extends State<RoomScreen>
 
   Widget? _buildFab() {
     if (_tabController.index == 0) {
-      return _InkFab(
+      return _GlowFab(
         key: const ValueKey('expense'),
         icon: Icons.add_rounded,
-        label: 'Expense',
         onPressed: _openAddExpenseSheet,
       );
     } else if (_tabController.index == 2) {
-      return _InkFab(
+      return _GlowFab(
         key: const ValueKey('member'),
         icon: Icons.person_add_alt_1_rounded,
-        label: 'Member',
         onPressed: _addMember,
       );
     }
@@ -374,12 +372,12 @@ class _SegmentedTabBar extends StatelessWidget {
                 builder: (_, _) {
                   final active = controller.index == i;
                   return Container(
-                    padding: const EdgeInsets.only(bottom: 12, top: 8),
+                    padding: const EdgeInsets.only(bottom: 10, top: 6),
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
                           color: active ? c.accent : Colors.transparent,
-                          width: 2.5,
+                          width: 2,
                         ),
                       ),
                     ),
@@ -387,7 +385,7 @@ class _SegmentedTabBar extends StatelessWidget {
                       child: AnimatedDefaultTextStyle(
                         duration: const Duration(milliseconds: 150),
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight:
                               active ? FontWeight.w700 : FontWeight.w500,
                           color: active ? c.ink : c.inkSecondary,
@@ -406,45 +404,39 @@ class _SegmentedTabBar extends StatelessWidget {
   }
 }
 
-/// ── Ink-filled FAB ────────────────────────────────────────────
-class _InkFab extends StatelessWidget {
+/// ── Circular FAB with accent glow ──────────────────────────────
+class _GlowFab extends StatelessWidget {
   final IconData icon;
-  final String label;
   final VoidCallback onPressed;
 
-  const _InkFab({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.onPressed,
-  });
+  const _GlowFab({super.key, required this.icon, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return Material(
-      color: c.ink,
-      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        onTap: onPressed,
-        child: Container(
-          height: 48,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, color: c.background, size: 20),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: TextStyle(
-                  color: c.background,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                ),
-              ),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: c.accent.withValues(alpha: 0.4),
+            blurRadius: 16,
+            spreadRadius: 2,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: c.accent,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onPressed,
+          child: SizedBox(
+            width: 56,
+            height: 56,
+            child: Icon(icon, color: c.background, size: 26),
           ),
         ),
       ),
@@ -462,14 +454,14 @@ class _MembersTab extends StatelessWidget {
     final expenses = context.watch<ExpenseProvider>().expenses;
     final balance = context.watch<ExpenseProvider>().balance;
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
       children: [
         _SummaryRow(
           memberCount: members.length,
           expenseCount: expenses.length,
           balanceCount: balance.entries.length,
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         const MemberList(),
       ],
     );
@@ -491,7 +483,7 @@ class _SummaryRow extends StatelessWidget {
   Widget _stat(String label, int value, IconData icon, AppColors c) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: c.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -500,24 +492,24 @@ class _SummaryRow extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: c.inkSecondary, size: 18),
-            const SizedBox(height: 12),
+            Icon(icon, color: c.inkSecondary, size: 16),
+            const SizedBox(height: 10),
             Text(
               '$value',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w800,
-                letterSpacing: -0.5,
+              style: AppTheme.mono(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
                 color: c.ink,
+                letterSpacing: -0.5,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               label,
-              style: TextStyle(
+              style: AppTheme.monoLabel(
+                fontSize: 9,
                 color: c.inkMuted,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+                letterSpacing: 1.2,
               ),
             ),
           ],
@@ -531,11 +523,11 @@ class _SummaryRow extends StatelessWidget {
     final c = AppColors.of(context);
     return Row(
       children: [
-        _stat('Members', memberCount, Icons.group_rounded, c),
-        const SizedBox(width: 10),
-        _stat('Expenses', expenseCount, Icons.receipt_long_rounded, c),
-        const SizedBox(width: 10),
-        _stat('Owed', balanceCount, Icons.swap_horiz_rounded, c),
+        _stat('MEMBERS', memberCount, Icons.group_rounded, c),
+        const SizedBox(width: 8),
+        _stat('EXPENSES', expenseCount, Icons.receipt_long_rounded, c),
+        const SizedBox(width: 8),
+        _stat('OWED', balanceCount, Icons.swap_horiz_rounded, c),
       ],
     );
   }

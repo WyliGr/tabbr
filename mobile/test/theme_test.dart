@@ -17,9 +17,19 @@ void main() {
     });
 
     test('radius constants are correct', () {
-      expect(AppTheme.radiusSm, 8);
-      expect(AppTheme.radiusMd, 12);
-      expect(AppTheme.radiusLg, 16);
+      expect(AppTheme.radiusSm, 6);
+      expect(AppTheme.radiusMd, 10);
+      expect(AppTheme.radiusLg, 14);
+    });
+
+    test('accentSurface is 5% opacity of accent', () {
+      final c = AppColors.withAccent(0xFFFF2D2D);
+      expect((c.accentSurface.a * 255).round().clamp(0, 255), closeTo(13, 2));
+    });
+
+    test('accentBorder is 30% opacity of accent', () {
+      final c = AppColors.withAccent(0xFFFF2D2D);
+      expect((c.accentBorder.a * 255).round().clamp(0, 255), closeTo(77, 3));
     });
 
     test('avatarColor returns a color from the palette', () {

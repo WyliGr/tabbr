@@ -23,13 +23,15 @@ class ExpenseList extends StatelessWidget {
         final expenses = provider.expenses;
 
         return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: expenses.length,
           itemBuilder: (context, index) {
             final expense = expenses[index];
-            return _ExpenseTile(
+            final isLast = index == expenses.length - 1;
+            return _ExpenseRow(
               key: ValueKey(expense.id),
               expense: expense,
+              showBottomBorder: !isLast,
             );
           },
         );
@@ -57,35 +59,35 @@ class _EmptyExpenses extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 64,
-                    height: 64,
+                    width: 56,
+                    height: 56,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: c.accentSoft,
                     ),
                     child: Icon(
                       Icons.receipt_outlined,
-                      size: 30,
+                      size: 26,
                       color: c.accent,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Text(
                     'No expenses yet',
                     style: TextStyle(
-                      fontSize: 17,
+                      fontSize: 16,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.3,
                       color: c.ink,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4),
                   Text(
-                    'Tap the button below to add\nyour first expense',
+                    'Tap + to add your first expense',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: c.inkSecondary,
-                      fontSize: 14,
+                      fontSize: 13,
                       height: 1.5,
                     ),
                   ),
@@ -130,8 +132,8 @@ class _LoadingListState extends State<_LoadingList>
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
-      itemCount: 5,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      itemCount: 6,
       itemBuilder: (context, index) {
         return AnimatedBuilder(
           animation: _controller,
@@ -139,14 +141,47 @@ class _LoadingListState extends State<_LoadingList>
             final t = Curves.easeInOut.transform(_controller.value);
             return Opacity(opacity: 0.3 + 0.4 * t, child: child);
           },
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Container(
-              height: 64,
-              decoration: BoxDecoration(
-                color: c.surfaceDim,
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          child: Container(
+            height: 52,
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: index < 5 ? c.border : Colors.transparent,
+                  width: 1,
+                ),
               ),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: c.surfaceDim,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Container(
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: c.surfaceDim,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  width: 56,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: c.surfaceDim,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -155,11 +190,16 @@ class _LoadingListState extends State<_LoadingList>
   }
 }
 
-/// ── Expense tile ──────────────────────────────────────────────
-class _ExpenseTile extends StatelessWidget {
+/// ── Expense row (bordered, not card) ──────────────────────────
+class _ExpenseRow extends StatelessWidget {
   final Expense expense;
+  final bool showBottomBorder;
 
-  const _ExpenseTile({super.key, required this.expense});
+  const _ExpenseRow({
+    super.key,
+    required this.expense,
+    required this.showBottomBorder,
+  });
 
   String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+'));
@@ -209,99 +249,86 @@ class _ExpenseTile extends StatelessWidget {
     final currency = NumberFormat.currency(symbol: '', decimalDigits: 2);
     final dateFormat = DateFormat('MMM d');
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: c.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          onLongPress: () => _confirmDelete(context),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              border: Border.all(color: c.border, width: 1),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _confirmDelete(context),
+        onLongPress: () => _confirmDelete(context),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: showBottomBorder ? c.border : Colors.transparent,
+                width: 1,
+              ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-            child: Row(
-              children: [
-                // ── Payer avatar ──
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: AppTheme.avatarColor(expense.payerId),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 11),
+          child: Row(
+            children: [
+              // ── Payer avatar (circle) ──
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: AppTheme.avatarColor(expense.payerId),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    _initials(expense.payerName),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                  child: Center(
-                    child: Text(
-                      _initials(expense.payerName),
-                      style: const TextStyle(
-                        color: Colors.white,
+                ),
+              ),
+              const SizedBox(width: 10),
+              // ── Description + meta ──
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      expense.description,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: c.ink,
                         fontSize: 14,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.2,
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                // ── Description + meta ──
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        expense.description,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: c.ink,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: -0.2,
-                        ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${expense.payerName} paid · ${dateFormat.format(expense.date.toLocal())}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTheme.mono(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                        color: c.inkSecondary,
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        '${expense.payerName} paid · ${dateFormat.format(expense.date.toLocal())}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: c.inkSecondary,
-                          fontSize: 12.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                // ── Amount ──
-                Text(
-                  currency.format(expense.amount),
-                  style: TextStyle(
-                    color: c.ink,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.3,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
-                ),
-                const SizedBox(width: 4),
-                // ── Delete ──
-                GestureDetector(
-                  onTap: () => _confirmDelete(context),
-                  behavior: HitTestBehavior.opaque,
-                  child: Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: 16,
-                      color: c.inkMuted,
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 8),
+              // ── Amount (mono, semibold) ──
+              Text(
+                currency.format(expense.amount),
+                style: AppTheme.mono(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: c.ink,
+                ).copyWith(
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+            ],
           ),
         ),
       ),
