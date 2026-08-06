@@ -32,23 +32,23 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // ── Appearance ──
               _SectionHeader(title: 'APPEARANCE'),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               _SettingsCard(
                 children: [
                   _AccentColorRow(),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 28),
 
               // ── Server ──
               _SectionHeader(title: 'SERVER'),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               _SettingsCard(
                 children: [
                   _ServerRow(
@@ -57,11 +57,11 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 28),
 
               // ── About ──
               _SectionHeader(title: 'ABOUT'),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               _SettingsCard(
                 children: [
                   _AboutRow(
@@ -109,33 +109,33 @@ class _AccentColorRow extends StatelessWidget {
       onTap: () => _showAccentPicker(context),
       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
           children: [
             // Current accent circle
             Container(
-              width: 28,
-              height: 28,
+              width: 26,
+              height: 26,
               decoration: BoxDecoration(
                 color: themeProvider.accentColor,
                 shape: BoxShape.circle,
                 border: Border.all(color: c.borderStrong, width: 1),
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
                 'Accent color',
                 style: TextStyle(
                   color: c.ink,
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
             Icon(
               Icons.chevron_right_rounded,
-              size: 20,
+              size: 18,
               color: c.inkMuted,
             ),
           ],
@@ -165,7 +165,7 @@ class _AccentPickerSheet extends StatelessWidget {
     final currentHex = themeProvider.accentHex;
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -175,7 +175,7 @@ class _AccentPickerSheet extends StatelessWidget {
             child: Container(
               width: 36,
               height: 4,
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                 color: c.borderStrong,
                 borderRadius: BorderRadius.circular(2),
@@ -184,21 +184,20 @@ class _AccentPickerSheet extends StatelessWidget {
           ),
           Text(
             'ACCENT COLOR',
-            style: TextStyle(
+            style: AppTheme.monoLabel(
+              fontSize: 10,
               color: c.inkMuted,
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 20,
+              crossAxisSpacing: 14,
+              mainAxisSpacing: 18,
               childAspectRatio: 0.85,
             ),
             itemCount: AppTheme.accentPresets.length,
@@ -215,8 +214,8 @@ class _AccentPickerSheet extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      width: 48,
-                      height: 48,
+                      width: 44,
+                      height: 44,
                       decoration: BoxDecoration(
                         color: Color(hex),
                         shape: BoxShape.circle,
@@ -233,11 +232,11 @@ class _AccentPickerSheet extends StatelessWidget {
                               color: _needsWhiteText(hex)
                                   ? Colors.white
                                   : Colors.black,
-                              size: 22,
+                              size: 20,
                             )
                           : null,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Text(
                       name,
                       textAlign: TextAlign.center,
@@ -284,11 +283,11 @@ class _ServerRow extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
           children: [
-            Icon(Icons.dns_outlined, color: c.inkSecondary, size: 20),
-            const SizedBox(width: 14),
+            Icon(Icons.dns_outlined, color: c.inkSecondary, size: 18),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,18 +296,19 @@ class _ServerRow extends StatelessWidget {
                     'Change server',
                     style: TextStyle(
                       color: c.ink,
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 3),
+                  const SizedBox(height: 2),
                   Text(
                     serverUrl,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: AppTheme.mono(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
                       color: c.inkMuted,
-                      fontSize: 12.5,
                     ),
                   ),
                 ],
@@ -340,14 +340,14 @@ class _AboutRow extends StatelessWidget {
     final c = AppColors.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(
         children: [
           Text(
             label,
             style: TextStyle(
               color: c.inkSecondary,
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -356,7 +356,7 @@ class _AboutRow extends StatelessWidget {
             value,
             style: TextStyle(
               color: c.ink,
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -381,10 +381,9 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.only(left: 4),
       child: Text(
         title,
-        style: TextStyle(
+        style: AppTheme.monoLabel(
+          fontSize: 10,
           color: c.inkMuted,
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
           letterSpacing: 1.2,
         ),
       ),
@@ -425,7 +424,7 @@ class _DividerLine extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Divider(
         height: 1,
         thickness: 1,

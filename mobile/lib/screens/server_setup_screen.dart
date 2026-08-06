@@ -104,7 +104,7 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 28),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -112,45 +112,45 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
               // ── Icon ──
               Center(
                 child: Container(
-                  width: 72,
-                  height: 72,
+                  width: 64,
+                  height: 64,
                   decoration: BoxDecoration(
                     color: c.accentSoft,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
                     Icons.dns_rounded,
-                    size: 34,
+                    size: 30,
                     color: c.accent,
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               Text(
                 'Connect to server',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 26,
+                  fontSize: 24,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
                   color: c.ink,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               Text(
                 'Enter your Tabbr server URL',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   color: c.inkSecondary,
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 28),
               TextField(
                 controller: _controller,
                 keyboardType: TextInputType.url,
                 autocorrect: false,
-                style: TextStyle(color: c.ink, fontSize: 15),
+                style: TextStyle(color: c.ink, fontSize: 14),
                 decoration: const InputDecoration(
                   labelText: 'Server URL',
                   hintText: 'http://localhost:8000',
@@ -160,7 +160,7 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                 duration: const Duration(milliseconds: 200),
                 child: _status != null
                     ? Padding(
-                        padding: const EdgeInsets.only(top: 14),
+                        padding: const EdgeInsets.only(top: 12),
                         child: Row(
                           children: [
                             Icon(
@@ -168,15 +168,15 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                                   ? Icons.check_circle_rounded
                                   : Icons.error_outline_rounded,
                               color: _statusOk ? c.positive : c.negative,
-                              size: 20,
+                              size: 18,
                             ),
-                            const SizedBox(width: 10),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 _status!,
                                 style: TextStyle(
                                   color: _statusOk ? c.positive : c.negative,
-                                  fontSize: 13,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -186,7 +186,7 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                       )
                     : const SizedBox.shrink(),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 24),
               // ── Save button (ink filled) ──
               Opacity(
                 opacity: _saving || _testing ? 0.6 : 1.0,
@@ -197,7 +197,7 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     onTap: _saving || _testing ? null : _save,
                     child: Container(
-                      height: 52,
+                      height: 48,
                       alignment: Alignment.center,
                       child: _saving
                           ? SizedBox(
@@ -213,17 +213,17 @@ class _ServerSetupScreenState extends State<ServerSetupScreen> {
                               style: TextStyle(
                                 color: c.background,
                                 fontWeight: FontWeight.w700,
-                                fontSize: 15,
+                                fontSize: 14,
                               ),
                             ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               // ── Test button (outlined) ──
               SizedBox(
-                height: 52,
+                height: 48,
                 child: OutlinedButton(
                   onPressed: _saving || _testing ? null : _test,
                   child: _testing

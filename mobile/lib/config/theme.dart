@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// ─────────────────────────────────────────────────────────────
 ///  Tabbr — Nothing OS design system
@@ -37,6 +38,12 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Soft accent tint (8% opacity) for icon backgrounds.
   final Color accentSoft;
 
+  /// Accent at 5% opacity — used for the room-code banner background.
+  final Color accentSurface;
+
+  /// Accent at 30% opacity — used for the room-code banner border.
+  final Color accentBorder;
+
   /// Positive / settled state — green.
   final Color positive;
 
@@ -68,6 +75,8 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.accent,
     required this.accentHover,
     required this.accentSoft,
+    required this.accentSurface,
+    required this.accentBorder,
     required this.positive,
     required this.positiveSoft,
     required this.ink,
@@ -91,6 +100,8 @@ class AppColors extends ThemeExtension<AppColors> {
       accent: accent,
       accentHover: _lighten(accent, 0.12),
       accentSoft: accent.withValues(alpha: 0.08),
+      accentSurface: accent.withValues(alpha: 0.05),
+      accentBorder: accent.withValues(alpha: 0.30),
       positive: const Color(0xFF4ADE80),
       positiveSoft: const Color(0xFF4ADE80).withValues(alpha: 0.08),
       ink: const Color(0xFFFFFFFF),
@@ -120,6 +131,8 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? accent,
     Color? accentHover,
     Color? accentSoft,
+    Color? accentSurface,
+    Color? accentBorder,
     Color? positive,
     Color? positiveSoft,
     Color? ink,
@@ -136,6 +149,8 @@ class AppColors extends ThemeExtension<AppColors> {
       accent: accent ?? this.accent,
       accentHover: accentHover ?? this.accentHover,
       accentSoft: accentSoft ?? this.accentSoft,
+      accentSurface: accentSurface ?? this.accentSurface,
+      accentBorder: accentBorder ?? this.accentBorder,
       positive: positive ?? this.positive,
       positiveSoft: positiveSoft ?? this.positiveSoft,
       ink: ink ?? this.ink,
@@ -157,6 +172,8 @@ class AppColors extends ThemeExtension<AppColors> {
       accent: Color.lerp(accent, other.accent, t)!,
       accentHover: Color.lerp(accentHover, other.accentHover, t)!,
       accentSoft: Color.lerp(accentSoft, other.accentSoft, t)!,
+      accentSurface: Color.lerp(accentSurface, other.accentSurface, t)!,
+      accentBorder: Color.lerp(accentBorder, other.accentBorder, t)!,
       positive: Color.lerp(positive, other.positive, t)!,
       positiveSoft: Color.lerp(positiveSoft, other.positiveSoft, t)!,
       ink: Color.lerp(ink, other.ink, t)!,
@@ -186,9 +203,41 @@ class AppTheme {
       avatarColors[id.abs() % avatarColors.length];
 
   // ── Shape ────────────────────────────────────────────────────
-  static const double radiusSm = 8;
-  static const double radiusMd = 12;
-  static const double radiusLg = 16;
+  static const double radiusSm = 6;
+  static const double radiusMd = 10;
+  static const double radiusLg = 14;
+
+  // ── Mono font helpers ────────────────────────────────────────
+  /// Monospace text style for codes, amounts, labels.
+  /// Mirrors the landing page mockup's use of a mono font for
+  /// numeric and code content.
+  static TextStyle mono({
+    double fontSize = 14,
+    FontWeight fontWeight = FontWeight.w500,
+    Color? color,
+    double letterSpacing = 0,
+    double? height,
+  }) =>
+      GoogleFonts.jetBrainsMono(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+        letterSpacing: letterSpacing,
+        height: height,
+      );
+
+  /// Uppercase mono label — tracking-widest style from the mockup.
+  static TextStyle monoLabel({
+    double fontSize = 10,
+    Color? color,
+    double letterSpacing = 1.4,
+  }) =>
+      GoogleFonts.jetBrainsMono(
+        fontSize: fontSize,
+        fontWeight: FontWeight.w600,
+        color: color,
+        letterSpacing: letterSpacing,
+      );
 
   // ── Preset accent colors ────────────────────────────────────
   static const List<int> accentPresets = [
@@ -260,9 +309,9 @@ class AppTheme {
         elevation: 0,
         centerTitle: false,
         titleTextStyle: TextStyle(
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: FontWeight.w800,
-          letterSpacing: -0.5,
+          letterSpacing: -1.0,
           color: c.ink,
         ),
         iconTheme: IconThemeData(color: c.ink),
@@ -274,10 +323,10 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radiusMd),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           textStyle: const TextStyle(
             fontWeight: FontWeight.w700,
-            fontSize: 15,
+            fontSize: 14,
           ),
         ),
       ),
@@ -288,10 +337,10 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radiusMd),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           textStyle: const TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 15,
+            fontSize: 14,
           ),
         ),
       ),
@@ -299,7 +348,7 @@ class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: c.accent,
           textStyle:
-              const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+              const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -326,12 +375,12 @@ class AppTheme {
           borderSide: BorderSide(color: c.negative, width: 1.5),
         ),
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        labelStyle: TextStyle(color: c.inkSecondary, fontSize: 14),
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+        labelStyle: TextStyle(color: c.inkSecondary, fontSize: 13),
         hintStyle: TextStyle(color: c.inkMuted, fontSize: 14),
         floatingLabelStyle: TextStyle(
           color: c.ink,
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -339,21 +388,20 @@ class AppTheme {
         labelColor: c.accent,
         unselectedLabelColor: c.inkSecondary,
         indicatorColor: c.accent,
-        labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+        labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
         unselectedLabelStyle:
-            const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+            const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: c.accent,
         foregroundColor: c.background,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radiusLg),
-        ),
+        elevation: 4,
+        shape: const CircleBorder(),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: c.surface,
-        contentTextStyle: TextStyle(color: c.ink, fontSize: 14),
+        contentTextStyle: TextStyle(color: c.ink, fontSize: 13),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusMd),
           side: BorderSide(color: c.border, width: 1),
@@ -379,7 +427,7 @@ class AppTheme {
           side: BorderSide(color: c.border, width: 1),
         ),
         titleTextStyle: TextStyle(
-          fontSize: 18,
+          fontSize: 17,
           fontWeight: FontWeight.w700,
           color: c.ink,
         ),
@@ -392,7 +440,7 @@ class AppTheme {
         backgroundColor: c.surface,
         surfaceTintColor: Colors.transparent,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
       ),
     );

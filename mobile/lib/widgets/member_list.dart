@@ -25,9 +25,11 @@ class MemberList extends StatelessWidget {
           itemCount: provider.members.length,
           itemBuilder: (context, index) {
             final member = provider.members[index];
-            return _MemberTile(
+            final isLast = index == provider.members.length - 1;
+            return _MemberRow(
               key: ValueKey(member.id),
               member: member,
+              showBottomBorder: !isLast,
             );
           },
         );
@@ -45,40 +47,40 @@ class _EmptyMembers extends StatelessWidget {
     final c = AppColors.of(context);
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 64,
-              height: 64,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: c.surfaceDim,
               ),
               child: Icon(
                 Icons.person_add_outlined,
-                size: 30,
+                size: 26,
                 color: c.inkSecondary,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Text(
               'No members yet',
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 16,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
                 color: c.ink,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Text(
-              'Add people to start\nsplitting together',
+              'Add people to start splitting',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: c.inkSecondary,
-                fontSize: 14,
+                fontSize: 13,
                 height: 1.5,
               ),
             ),
@@ -101,13 +103,14 @@ class _MemberLoading extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
       itemCount: 4,
-      itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Container(
-          height: 60,
-          decoration: BoxDecoration(
-            color: c.surfaceDim,
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+      itemBuilder: (context, index) => Container(
+        height: 48,
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: index < 3 ? c.border : Colors.transparent,
+              width: 1,
+            ),
           ),
         ),
       ),
@@ -115,11 +118,16 @@ class _MemberLoading extends StatelessWidget {
   }
 }
 
-/// ── Member tile ───────────────────────────────────────────────
-class _MemberTile extends StatelessWidget {
+/// ── Member row (bordered, not card) ───────────────────────────
+class _MemberRow extends StatelessWidget {
   final Member member;
+  final bool showBottomBorder;
 
-  const _MemberTile({super.key, required this.member});
+  const _MemberRow({
+    super.key,
+    required this.member,
+    required this.showBottomBorder,
+  });
 
   String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+'));
@@ -166,66 +174,66 @@ class _MemberTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Container(
-        decoration: BoxDecoration(
-          color: c.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: c.border, width: 1),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: showBottomBorder ? c.border : Colors.transparent,
+            width: 1,
+          ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Row(
-          children: [
-            // ── Avatar ──
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppTheme.avatarColor(member.id),
-                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-              ),
-              child: Center(
-                child: Text(
-                  _initials(member.name),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 11),
+      child: Row(
+        children: [
+          // ── Avatar (circle) ──
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: AppTheme.avatarColor(member.id),
+              shape: BoxShape.circle,
             ),
-            const SizedBox(width: 12),
-            // ── Name ──
-            Expanded(
+            child: Center(
               child: Text(
-                member.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: c.ink,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: -0.2,
+                _initials(member.name),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-            // ── Remove ──
-            GestureDetector(
-              onTap: () => _confirmDelete(context),
-              behavior: HitTestBehavior.opaque,
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Icon(
-                  Icons.close_rounded,
-                  size: 16,
-                  color: c.inkMuted,
-                ),
+          ),
+          const SizedBox(width: 10),
+          // ── Name ──
+          Expanded(
+            child: Text(
+              member.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: c.ink,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.2,
               ),
             ),
-          ],
-        ),
+          ),
+          // ── Remove ──
+          GestureDetector(
+            onTap: () => _confirmDelete(context),
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Icon(
+                Icons.close_rounded,
+                size: 14,
+                color: c.inkMuted,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
