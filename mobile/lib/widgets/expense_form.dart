@@ -54,6 +54,121 @@ class _ExpenseFormState extends State<ExpenseForm> {
     }
   }
 
+  String _payerName(List<Member> members, int id) {
+    final m = members.where((m) => m.id == id).firstOrNull;
+    return m?.name ?? 'Unknown';
+  }
+
+  String _payerInitials(List<Member> members, int id) {
+    final name = _payerName(members, id);
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts.first.isEmpty) return '?';
+    if (parts.length == 1) return parts.first[0].toUpperCase();
+    return (parts.first[0] + parts.last[0]).toUpperCase();
+  }
+
+  void _showPayerPicker(BuildContext context, List<Member> members) {
+    final c = AppColors.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: c.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Drag handle
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(top: 12, bottom: 16),
+                  decoration: BoxDecoration(
+                    color: c.borderStrong,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'PAID BY',
+                  style: AppTheme.monoLabel(
+                    fontSize: 10,
+                    color: c.inkMuted,
+                    letterSpacing: 1.4,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              ...members.map((m) {
+                final selected = m.id == _payerId;
+                return InkWell(
+                  onTap: () {
+                    setState(() => _payerId = m.id);
+                    Navigator.of(ctx).pop();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: c.border, width: 1),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: AppTheme.avatarColor(m.id),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              _payerInitials(members, m.id),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            m.name,
+                            style: TextStyle(
+                              color: c.ink,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        if (selected)
+                          Icon(
+                            Icons.check_rounded,
+                            size: 18,
+                            color: c.accent,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     if (_payerId == null) {
@@ -226,27 +341,86 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 const SizedBox(height: 12),
 
                 // ── Paid by ──
-                DropdownButtonFormField<int>(
-                  initialValue: _payerId,
-                  style: TextStyle(color: c.ink, fontSize: 14),
-                  dropdownColor: c.surface,
-                  iconEnabledColor: c.inkSecondary,
-                  decoration: const InputDecoration(
-                    labelText: 'Paid by',
+                Text(
+                  'PAID BY',
+                  style: AppTheme.monoLabel(
+                    fontSize: 9,
+                    color: c.inkMuted,
+                    letterSpacing: 1.4,
                   ),
-                  items: members
-                      .map<DropdownMenuItem<int>>(
-                        (Member m) => DropdownMenuItem<int>(
-                          value: m.id,
-                          child: Text(m.name),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: members.isEmpty
-                      ? null
-                      : (v) => setState(() => _payerId = v),
-                  validator: (v) => v == null ? 'Choose who paid' : null,
                 ),
+                const SizedBox(height: 6),
+                GestureDetector(
+                  onTap: members.isEmpty ? null : () => _showPayerPicker(context, members),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: c.surface,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                      border: Border.all(
+                        color: _payerId == null ? c.border : c.accent.withValues(alpha: 0.4),
+                        width: 1,
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+                    child: Row(
+                      children: [
+                        if (_payerId != null) ...[
+                          Container(
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: AppTheme.avatarColor(_payerId!),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Text(
+                                _payerInitials(members, _payerId!),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            _payerName(members, _payerId!),
+                            style: TextStyle(
+                              color: c.ink,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ] else ...[
+                          Text(
+                            members.isEmpty ? 'No members yet' : 'Choose who paid',
+                            style: TextStyle(
+                              color: c.inkMuted,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                        const Spacer(),
+                        Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 18,
+                          color: c.inkMuted,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (_submitError == 'Please choose who paid') ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    'Please choose who paid',
+                    style: TextStyle(
+                      color: c.negative,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 12),
 
                 // ── Date ──
