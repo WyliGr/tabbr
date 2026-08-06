@@ -17,20 +17,63 @@ tabbr/
 
 FastAPI + PostgreSQL. Room-based expense sharing with 5-letter codes.
 
-### Run with Docker
+### Quick start (no clone needed)
+
+Create a `docker-compose.yml` on your server with:
+
+```yaml
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tabbr
+      POSTGRES_USER: tabbr
+      POSTGRES_PASSWORD: CHANGE_ME
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tabbr"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    image: ghcr.io/wyligr/tabbr-backend:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://tabbr:CHANGE_ME@db:5432/tabbr
+
+volumes:
+  pgdata:
+```
+
+Then:
 
 ```bash
-cp .env.example .env
-# change POSTGRES_PASSWORD
-docker compose up --build -d
+docker compose up -d
 ```
 
 API on http://localhost:8000
 Docs on http://localhost:8000/docs
 
+### From this repo (with build)
+
+```bash
+git clone https://github.com/WyliGr/tabbr.git
+cd tabbr
+# edit docker-compose.yml: change POSTGRES_PASSWORD
+docker compose up -d
+```
+
 ### Portainer
 
-Deploy from Git repo using `docker-compose.yml` and `stack.env` for env vars.
+Paste the compose above into a new stack. Set `POSTGRES_PASSWORD` to something secure. The backend image is pulled automatically from GHCR.
 
 ### Local dev
 
@@ -43,7 +86,7 @@ uvicorn main:app --reload --port 8000
 
 ## Mobile app
 
-Flutter 3.44.8, Material 3 dark theme.
+Flutter, Nothing OS dark theme, custom accent color picker.
 
 ```bash
 cd mobile
