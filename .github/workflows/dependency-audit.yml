@@ -1,0 +1,43 @@
+name: Dependency audit (OSV)
+
+on:
+  pull_request:
+    paths:
+      - 'backend/requirements.txt'
+      - 'mobile/pubspec.yaml'
+      - 'mobile/pubspec.lock'
+      - 'scripts/osv_audit.py'
+      - '.github/workflows/dependency-audit.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/requirements.txt'
+      - 'mobile/pubspec.yaml'
+      - 'mobile/pubspec.lock'
+      - 'scripts/osv_audit.py'
+  schedule:
+    # Weekly, so new advisories against already-pinned versions are caught even
+    # when nothing in the repo changes.
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  osv-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Audit backend requirements (PyPI)
+        run: python scripts/osv_audit.py backend/requirements.txt
+
+      - name: Audit mobile lockfile (Pub)
+        run: python scripts/osv_audit.py mobile/pubspec.lock
