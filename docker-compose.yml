@@ -5,7 +5,11 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-tabbr}
       POSTGRES_USER: ${POSTGRES_USER:-tabbr}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tabbr}
+      # SECURITY: no default value. A known/committed DB password is how one
+      # exposed service turns into lateral movement across the host. The
+      # variable is mandatory and compose fails fast when it is unset.
+      # Generate one with: openssl rand -base64 32
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required - set it in your .env (see stack.env.example)}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -23,7 +27,7 @@ services:
     ports:
       - "${PORT:-8000}:8000"
     environment:
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-tabbr}:${POSTGRES_PASSWORD:-tabbr}@db:5432/${POSTGRES_DB:-tabbr}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-tabbr}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required - set it in your .env (see stack.env.example)}@db:5432/${POSTGRES_DB:-tabbr}
 
 volumes:
   pgdata:
